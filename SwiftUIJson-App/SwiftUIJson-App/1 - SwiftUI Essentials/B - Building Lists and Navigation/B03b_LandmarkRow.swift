@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct B03a_LandmarkRow: View {
-    var landmark: B01a_Landmark
+struct B03b_LandmarkRow: View {
+    var landmark: Landmark
 
     var body: some View {
         HStack {
@@ -14,8 +14,9 @@ struct B03a_LandmarkRow: View {
     }
 }
 
-struct B03a_LandmarkRow_Previews: PreviewProvider {
+struct B03b_LandmarkRow_Previews: PreviewProvider {
     static var previews: some View {
-        B03a_LandmarkRow(landmark: landmarkData[1])
+        B03b_LandmarkRow(landmark: landmarkData[1])
+            .previewLayout(.fixed(width: 300, height: 70))
     }
 }

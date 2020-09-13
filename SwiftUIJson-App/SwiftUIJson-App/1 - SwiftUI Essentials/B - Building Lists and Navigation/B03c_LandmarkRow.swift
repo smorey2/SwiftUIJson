@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct B03c_LandmarkRow: View {
-    var landmark: B01a_Landmark
+    var landmark: Landmark
 
     var body: some View {
         HStack {

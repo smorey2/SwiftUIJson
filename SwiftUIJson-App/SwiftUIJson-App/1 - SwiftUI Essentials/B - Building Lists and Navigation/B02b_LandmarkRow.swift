@@ -1,10 +1,12 @@
 import SwiftUI
 
 struct B02b_LandmarkRow: View {
-    var landmark: B01a_Landmark
+    var landmark: Landmark
 
     var body: some View {
-        Text("Hello World")
+        HStack {
+            Text("Hello World")
+        }
     }
 }
 

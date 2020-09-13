@@ -3,7 +3,7 @@ import SwiftUI
 struct B05a_LandmarkList: View {
     var body: some View {
         List(landmarkData, id: \.id) { landmark in
-
+            EmptyView()
         }
     }
 }
