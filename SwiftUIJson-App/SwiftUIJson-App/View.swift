@@ -11,33 +11,27 @@ import SwiftUI
 
 // https://developer.apple.com/documentation/swiftui/views-and-controls
 
-//class SwiftUISerdes {
-//    static func EncodeRecurse() {
-//    }
-//}
 
-struct Root: Codable {
-    let value: Codable
-    
+extension AnyView: Encodable
+{
     public func encode(to encoder: Encoder) throws {
-    }
-    public init(value: Codable) throws {
-        self.value = value
-    }
-    public init(from decoder: Decoder) throws {
-        value = Text("T")
+        let mirror = Mirror(reflecting: self)
+        for child in mirror.children {
+            print("name:", child.label ?? "{nil}")
+            print("value:", child.value)
+        }
     }
 }
 
 extension View {
     public func Dump() -> some View {
-        guard let value = self.body as? Codable else {
+        guard let value = self.body as? AnyView else {
             print("Unable to encode view")
             return self
         }
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
-        let data = try! encoder.encode(Root(value: value))
+        let data = try! encoder.encode(value)
         print(String(data: data, encoding: .utf8)!)
         return self
     }

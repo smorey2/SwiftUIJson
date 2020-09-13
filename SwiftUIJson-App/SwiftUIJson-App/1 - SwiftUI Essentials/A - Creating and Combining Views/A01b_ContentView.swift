@@ -9,5 +9,6 @@ struct A01b_ContentView: View {
 struct A01b_ContentView_Previews: PreviewProvider {
     static var previews: some View {
         A01b_ContentView()
+            .Dump()
     }
 }

@@ -11,5 +11,6 @@ struct A02a_ContentView: View {
 struct A02a_ContentView_Previews: PreviewProvider {
     static var previews: some View {
         A02a_ContentView()
+            .Dump()
     }
 }
