@@ -2,9 +2,11 @@ import SwiftUI
 
 struct SampleView: View {
     var body: some View {
-        Text("Hello World")
-            .font(.title)
-            .foregroundColor(.green)
+        VStack {
+            Text("Turtle Rock")
+                .font(.title)
+            Text("Joshua Tree National Park")
+        }
     }
 }
 

@@ -32,13 +32,13 @@ public struct JsonPreview<Content>: View where Content: View {
             VStack {
                 HStack {
                     content
-                        .frame(width: geometry.size.width / 2, height: geometry.size.height * 0.8)
+                        .frame(width: geometry.size.width / 2, height: geometry.size.height * 0.7)
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(Color.black, lineWidth: 4)
                         )
                     content
-                        .frame(width: geometry.size.width / 2, height: geometry.size.height * 0.8)
+                        .frame(width: geometry.size.width / 2, height: geometry.size.height * 0.7)
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(Color.black, lineWidth: 4)
@@ -52,7 +52,7 @@ public struct JsonPreview<Content>: View where Content: View {
                     }
                     .padding()
                 }
-                .frame(width: geometry.size.width, height: geometry.size.height * 0.2 - 10)
+                .frame(width: geometry.size.width, height: geometry.size.height * 0.3 - 10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(Color.black, lineWidth: 4)

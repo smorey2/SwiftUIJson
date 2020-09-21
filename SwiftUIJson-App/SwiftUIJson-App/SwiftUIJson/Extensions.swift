@@ -39,6 +39,16 @@ extension KeyedDecodingContainer where K : CodingKey {
     }
 }
 
+extension Mirror {
+    static func single(reflecting: Any, named: String) -> Mirror.Child {
+        let children = Mirror(reflecting: reflecting).children
+        guard let first = children.first, first.label == named else {
+            fatalError("single")
+        }
+        return first
+    }
+}
+
 extension Dictionary where Key == String, Value:Any {
     init(reflecting: Any) {
         self = Mirror(reflecting: reflecting).children.reduce(into: [Key: Value]()) { $0[$1.label!] = $1.value as? Value }
