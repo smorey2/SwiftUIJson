@@ -11,6 +11,8 @@ struct A04c_CircleImage: View {
 
 struct A04c_CircleImage_Previews: PreviewProvider {
     static var previews: some View {
-        A04c_CircleImage()
+        JsonPreview {
+            A04c_CircleImage()
+        }
     }
 }

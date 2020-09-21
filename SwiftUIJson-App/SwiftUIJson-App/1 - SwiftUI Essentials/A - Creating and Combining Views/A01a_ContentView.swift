@@ -8,7 +8,8 @@ struct A01a_ContentView: View {
 
 struct A01a_ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        A01a_ContentView()
-            .Dump()
+        JsonPreview {
+            A01a_ContentView()
+        }
     }
 }

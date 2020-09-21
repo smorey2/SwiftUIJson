@@ -17,6 +17,8 @@ struct A05_MapView: UIViewRepresentable {
 
 struct A05_MapView_Previews: PreviewProvider {
     static var previews: some View {
-        A05_MapView()
+        JsonPreview {
+            A05_MapView()
+        }
     }
 }

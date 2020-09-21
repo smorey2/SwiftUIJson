@@ -26,6 +26,8 @@ struct A06d_ContentView: View {
 
 struct A06d_ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        A06d_ContentView()
+        JsonPreview {
+            A06d_ContentView()
+        }
     }
 }

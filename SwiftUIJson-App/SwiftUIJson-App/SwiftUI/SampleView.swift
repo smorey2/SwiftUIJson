@@ -1,17 +1,17 @@
 import SwiftUI
 
-struct A02a_ContentView: View {
+struct SampleView: View {
     var body: some View {
-        Text("Turtle Rock")
+        Text("Hello World")
             .font(.title)
             .foregroundColor(.green)
     }
 }
 
-struct A02a_ContentView_Previews: PreviewProvider {
+struct SampleView_Previews: PreviewProvider {
     static var previews: some View {
         JsonPreview {
-            A02a_ContentView()
+            SampleView()
         }
     }
 }

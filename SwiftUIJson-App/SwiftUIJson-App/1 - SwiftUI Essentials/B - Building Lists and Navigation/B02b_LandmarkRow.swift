@@ -12,6 +12,8 @@ struct B02b_LandmarkRow: View {
 
 struct B02b_LandmarkRow_Previews: PreviewProvider {
     static var previews: some View {
-        B02b_LandmarkRow(landmark: landmarkData[0])
+        JsonPreview {
+            B02b_LandmarkRow(landmark: landmarkData[0])
+        }
     }
 }
