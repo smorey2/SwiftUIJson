@@ -147,6 +147,7 @@
 		54C22BC32518E9D9001947C4 /* TupleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22BC22518E9D9001947C4 /* TupleView.swift */; };
 		54C22BC72518E9DA001947C4 /* _ViewModifier_Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22BC62518E9DA001947C4 /* _ViewModifier_Content.swift */; };
 		54C22BCB2518E9DB001947C4 /* Spacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22BCA2518E9DB001947C4 /* Spacer.swift */; };
+		54C22C052519644B001947C4 /* EmptyAnimatableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22C042519644B001947C4 /* EmptyAnimatableData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -304,6 +305,7 @@
 		54C22BC22518E9D9001947C4 /* TupleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TupleView.swift; sourceTree = "<group>"; };
 		54C22BC62518E9DA001947C4 /* _ViewModifier_Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _ViewModifier_Content.swift; sourceTree = "<group>"; };
 		54C22BCA2518E9DB001947C4 /* Spacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacer.swift; sourceTree = "<group>"; };
+		54C22C042519644B001947C4 /* EmptyAnimatableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyAnimatableData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -582,6 +584,7 @@
 				54C22B8B2518E88A001947C4 /* DatePicker.swift */,
 				54C22B1E2518E634001947C4 /* Divider.swift */,
 				54C22AA72518E37B001947C4 /* EditButton.swift */,
+				54C22C042519644B001947C4 /* EmptyAnimatableData.swift */,
 				54C22B982518E88E001947C4 /* EmptyView.swift */,
 				54C22A912518E2E0001947C4 /* EquatableView.swift */,
 				54C22AE72518E3B4001947C4 /* Font.swift */,
@@ -814,6 +817,7 @@
 				54C22A602518E1F2001947C4 /* View.swift in Sources */,
 				54C22B6D2518E751001947C4 /* _MaskEffect.swift in Sources */,
 				54919FA9250A69D900767B94 /* A04e_CircleImage.swift in Sources */,
+				54C22C052519644B001947C4 /* EmptyAnimatableData.swift in Sources */,
 				54919F9F250A688A00767B94 /* A01b_ContentView.swift in Sources */,
 				54919F95250A676400767B94 /* A03d_ContentView.swift in Sources */,
 				54C22B1D2518E632001947C4 /* _DelayedPreferenceView.swift in Sources */,

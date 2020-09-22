@@ -18,9 +18,9 @@ public struct JsonPreview<Content>: View where Content: View {
     
     public init(@ViewBuilder content: () -> Content) {
         self.content = content()
-        
         do {
-            data = try self.content.encode() ?? "None".data(using: .utf8)!
+            let missing = "\(type(of: self.content).self) Not Codeable".data(using: .utf8)!
+            data = try self.content.encode() ?? missing
         }
         catch {
             data = error.localizedDescription.data(using: .utf8)!

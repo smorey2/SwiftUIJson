@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-extension _VariadicView.Tree: Encodable where Root : _VariadicView_ViewRoot, Content : View {
-    public func encode(to encoder: Encoder) throws {
-    }
-}
-
-extension _VariadicView_Children: Encodable {
-    public func encode(to encoder: Encoder) throws {
-    }
-}
+//extension _VariadicView.Tree: Encodable where Root : _VariadicView_ViewRoot, Content : View {
+//    public func encode(to encoder: Encoder) throws {
+//    }
+//}
+//
+//extension _VariadicView_Children: Encodable {
+//    public func encode(to encoder: Encoder) throws {
+//    }
+//}

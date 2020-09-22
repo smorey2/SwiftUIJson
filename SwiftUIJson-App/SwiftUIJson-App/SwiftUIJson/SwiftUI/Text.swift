@@ -30,8 +30,8 @@ extension Text: Codable {
         case rounded
         case anyTextModifier(AnyTextModifier)
         init(_ s: Mirror.Child) {
-            let mirror = [String: Any](reflecting: s.value).first!
-            switch mirror.key {
+            let mirror = Mirror.single(reflecting: s.value)
+            switch mirror.label! {
             case "color": self = .color(mirror.value as? Color)
             case "font": self = .font(mirror.value as? Font)
             case "italic": self = .italic
@@ -41,7 +41,7 @@ extension Text: Codable {
             case "baseline": self = .baseline(mirror.value as! CoreGraphics.CGFloat)
             case "rounded": self = .rounded
             case "anyTextModifier": self = .anyTextModifier(AnyTextModifier(mirror.value))
-            default: fatalError(mirror.key)
+            default: fatalError(mirror.label!)
             }
         }
         // MARK - Codable
@@ -85,7 +85,7 @@ extension Text: Codable {
         let table: String?
         let bundle: Bundle?
         init(_ s: Any) {
-            let mirror = [String: Any](reflecting: s)
+            let mirror = Mirror.children(reflecting: s)
             self.key = mirror["key"] as! LocalizedStringKey
             self.table = mirror["table"] as? String
             self.bundle = mirror["bundle"] as? Bundle
@@ -132,7 +132,7 @@ extension Text: Codable {
     }
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
+        // storage
         if container.contains(.verbatim) { self = Text(verbatim: try container.decode(String.self, forKey: .verbatim)) }
         else if container.contains(.text) { self = Text(try container.decode(String.self, forKey: .text)) }
         else if container.contains(.anyText) {
@@ -143,12 +143,13 @@ extension Text: Codable {
             let context = DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Invalid Text!")
             throw DecodingError.dataCorrupted(context)
         }
+        // modifiers
     }
     public func encode(to encoder: Encoder) throws {
-        let mirror = [String: Any](reflecting: self)
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        let storage = Storage(mirror.childNamed("storage"))
+        let mirror = Mirror.children(reflecting: self)
+        // storage
+        let storage = Storage(mirror.child(named: "storage"))
         switch storage {
         case .verbatim(let text): try container.encode(text, forKey: .verbatim)
         case .anyTextStorage(let anyText):
@@ -158,8 +159,10 @@ extension Text: Codable {
             }
             try container.encode(anyText, forKey: .anyText)
         }
-        
-        let modifiers = mirror.childrenNamed("modifiers").map { Modifier($0) }
-        try container.encode(modifiers, forKey: .modifiers)
+        // modifiers
+        let modifiers = mirror.children(named: "modifiers").map { Modifier($0) }
+        if !modifiers.isEmpty {
+            try container.encode(modifiers, forKey: .modifiers)
+        }
     }
 }
