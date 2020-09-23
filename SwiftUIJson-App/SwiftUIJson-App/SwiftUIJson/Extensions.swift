@@ -19,7 +19,10 @@ extension Bundle {
     }
     
     static func typeFromString(_ typeName: String) -> AnyClass! {
-        NSClassFromString(typeName)!
+        guard let type = NSClassFromString(typeName) else {
+            fatalError("\(typeName) not found")
+        }
+        return type
     }
 }
 
