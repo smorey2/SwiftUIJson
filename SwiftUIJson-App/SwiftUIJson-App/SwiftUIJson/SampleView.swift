@@ -1,12 +1,18 @@
 import SwiftUI
 
+//struct SampleView: View {
+//    var body: some View {
+//        VStack {
+//            Text("Turtle Rock")
+//                .font(.title)
+//            Text("Joshua Tree National Park")
+//        }
+//    }
+//}
+
 struct SampleView: View {
     var body: some View {
-        VStack {
-            Text("Turtle Rock")
-                .font(.title)
-            Text("Joshua Tree National Park")
-        }
+        Text("Turtle Rock")
     }
 }
 

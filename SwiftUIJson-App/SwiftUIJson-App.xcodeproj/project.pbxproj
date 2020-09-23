@@ -82,8 +82,7 @@
 		54919FFF250A7A2F00767B94 /* chilkoottrail.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 54919FF2250A7A2F00767B94 /* chilkoottrail.jpg */; };
 		5491A000250A7A2F00767B94 /* rainbowlake.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 54919FF3250A7A2F00767B94 /* rainbowlake.jpg */; };
 		5491A002250A7B2100767B94 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5491A001250A7B2100767B94 /* Data.swift */; };
-		54C22A5A2518E1DC001947C4 /* Root.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22A592518E1DC001947C4 /* Root.swift */; };
-		54C22A602518E1F2001947C4 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22A5F2518E1F2001947C4 /* View.swift */; };
+		54C22A5A2518E1DC001947C4 /* JsonUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22A592518E1DC001947C4 /* JsonUI.swift */; };
 		54C22A702518E26E001947C4 /* _PullDownButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22A6F2518E26E001947C4 /* _PullDownButton.swift */; };
 		54C22A782518E2C3001947C4 /* Toggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22A772518E2C3001947C4 /* Toggle.swift */; };
 		54C22A7E2518E2D8001947C4 /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22A7D2518E2D8001947C4 /* SubscriptionView.swift */; };
@@ -240,8 +239,7 @@
 		54919FF2250A7A2F00767B94 /* chilkoottrail.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = chilkoottrail.jpg; sourceTree = "<group>"; };
 		54919FF3250A7A2F00767B94 /* rainbowlake.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = rainbowlake.jpg; sourceTree = "<group>"; };
 		5491A001250A7B2100767B94 /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
-		54C22A592518E1DC001947C4 /* Root.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Root.swift; sourceTree = "<group>"; };
-		54C22A5F2518E1F2001947C4 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		54C22A592518E1DC001947C4 /* JsonUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonUI.swift; sourceTree = "<group>"; };
 		54C22A6F2518E26E001947C4 /* _PullDownButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _PullDownButton.swift; sourceTree = "<group>"; };
 		54C22A772518E2C3001947C4 /* Toggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toggle.swift; sourceTree = "<group>"; };
 		54C22A7D2518E2D8001947C4 /* SubscriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionView.swift; sourceTree = "<group>"; };
@@ -410,6 +408,7 @@
 				5443154F2517E59100BFDD83 /* Extensions.swift */,
 				54C22AF12518E3FD001947C4 /* Foundation */,
 				546538F425166AB2003161DE /* JsonPreview.swift */,
+				54C22A592518E1DC001947C4 /* JsonUI.swift */,
 				544A378D250EE589007CC305 /* SampleView.swift */,
 				54C22A582518E1D3001947C4 /* SwiftUI */,
 			);
@@ -605,7 +604,6 @@
 				54C22B942518E88E001947C4 /* Never.swift */,
 				54C22AC32518E389001947C4 /* PasteButton.swift */,
 				54C22B962518E88E001947C4 /* Picker.swift */,
-				54C22A592518E1DC001947C4 /* Root.swift */,
 				54C22B2B2518E63F001947C4 /* ScrollView.swift */,
 				54C22B162518E62A001947C4 /* Section.swift */,
 				54C22AB32518E380001947C4 /* SecureField.swift */,
@@ -621,7 +619,6 @@
 				54C22BC22518E9D9001947C4 /* TupleView.swift */,
 				54C22B952518E88E001947C4 /* UIHostingController.swift */,
 				54C22BB82518E9B1001947C4 /* UIViewRepresentable.swift */,
-				54C22A5F2518E1F2001947C4 /* View.swift */,
 				54C22B262518E638001947C4 /* VSplitView.swift */,
 				54C22B222518E636001947C4 /* VStack.swift */,
 				54C22B5C2518E74F001947C4 /* ZStack.swift */,
@@ -753,7 +750,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				54C22B352518E640001947C4 /* TabView.swift in Sources */,
-				54C22A5A2518E1DC001947C4 /* Root.swift in Sources */,
+				54C22A5A2518E1DC001947C4 /* JsonUI.swift in Sources */,
 				54919FD8250A709500767B94 /* B03c_LandmarkRow.swift in Sources */,
 				54C22B1F2518E634001947C4 /* Divider.swift in Sources */,
 				544A378E250EE589007CC305 /* SampleView.swift in Sources */,
@@ -814,7 +811,6 @@
 				54919F8A250A65D200767B94 /* A06a_ContentView.swift in Sources */,
 				54C22A822518E2DA001947C4 /* ModifiedContent.swift in Sources */,
 				54C22B322518E640001947C4 /* GeometryReader.swift in Sources */,
-				54C22A602518E1F2001947C4 /* View.swift in Sources */,
 				54C22B6D2518E751001947C4 /* _MaskEffect.swift in Sources */,
 				54919FA9250A69D900767B94 /* A04e_CircleImage.swift in Sources */,
 				54C22C052519644B001947C4 /* EmptyAnimatableData.swift in Sources */,
@@ -963,6 +959,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1018,6 +1015,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

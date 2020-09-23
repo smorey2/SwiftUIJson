@@ -13,7 +13,7 @@ extension TupleView: Codable {
         var items = [Any]()
         while !container.isAtEnd {
             let baseDecoder = try container.superDecoder()
-            let item = try Text.init(from: baseDecoder)
+            let item = try baseDecoder.superInit()
             items.append(item)
         }
         let t = items.withUnsafeBytes {
@@ -28,6 +28,7 @@ extension TupleView: Codable {
                 continue
             }
             let baseEncoder = container.superEncoder()
+            try baseEncoder.superInit(for: value)
             try value.encode(to: baseEncoder)
         }
     }

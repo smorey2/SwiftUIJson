@@ -1,5 +1,5 @@
 //
-//  Core.swift
+//  Extensions.swift
 //  Glyph
 //
 //  Created by Sky Morey on 8/22/20.
@@ -8,9 +8,35 @@
 
 import SwiftUI
 
-//public enum CodableError: Error {
-//    case decode
-//}
+enum SuperInitCodingKeys: CodingKey {
+    case _type
+}
+
+extension Bundle {
+    static func stringFromType(_ obj: Any) -> String! {
+        //let namespace = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
+        String(reflecting: type(of: obj).self)
+    }
+    
+    static func typeFromString(_ typeName: String) -> AnyClass! {
+        NSClassFromString(typeName)!
+    }
+}
+
+extension Encoder {
+    func superInit(for item: Any) throws {
+        var container = self.container(keyedBy: SuperInitCodingKeys.self)
+        try container.encode(Bundle.stringFromType(item), forKey: ._type)
+    }
+}
+
+extension Decoder {
+    func superInit() throws -> Any {
+        let container = try self.container(keyedBy: SuperInitCodingKeys.self)
+        let type = Bundle.typeFromString(try container.decode(String.self, forKey: ._type)) as! Decodable.Type
+        return try type.init(from: self)
+    }
+}
 
 extension KeyedEncodingContainer where K : CodingKey {
     public mutating func encodeKey(forKey key: KeyedEncodingContainer<K>.Key) throws {

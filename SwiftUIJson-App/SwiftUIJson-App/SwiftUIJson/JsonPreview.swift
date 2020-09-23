@@ -13,18 +13,27 @@ public struct JsonPreview<Content>: View where Content: View {
     /// The json preview's content.
     public let content: Content
 
+    /// The json preview's content.
+    public let content2: AnyView
+    
     /// The json preview's data.
-    public let data: Data
+    public var data: Data
     
     public init(@ViewBuilder content: () -> Content) {
         self.content = content()
         do {
             let missing = "\(type(of: self.content).self) Not Codeable".data(using: .utf8)!
-            data = try self.content.encode() ?? missing
+            data = try JsonUI.encode(view: self.content.body) ?? missing
         }
         catch {
             data = error.localizedDescription.data(using: .utf8)!
         }
+        guard let body = JsonUI(json: data).body else {
+            data = "Not Decodeable".data(using: .utf8)!
+            content2 = AnyView(self.content)
+            return
+        }
+        content2 = AnyView(Text("Here")) //AnyView(body as View)
     }
             
     public var body: some View {
@@ -37,7 +46,7 @@ public struct JsonPreview<Content>: View where Content: View {
                             RoundedRectangle(cornerRadius: 16)
                                 .stroke(Color.black, lineWidth: 4)
                         )
-                    content
+                    content2
                         .frame(width: geometry.size.width / 2, height: geometry.size.height * 0.7)
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
