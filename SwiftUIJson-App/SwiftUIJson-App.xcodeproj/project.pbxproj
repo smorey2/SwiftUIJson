@@ -82,6 +82,8 @@
 		54919FFF250A7A2F00767B94 /* chilkoottrail.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 54919FF2250A7A2F00767B94 /* chilkoottrail.jpg */; };
 		5491A000250A7A2F00767B94 /* rainbowlake.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 54919FF3250A7A2F00767B94 /* rainbowlake.jpg */; };
 		5491A002250A7B2100767B94 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5491A001250A7B2100767B94 /* Data.swift */; };
+		54B0DAFB251F8582005FDC74 /* JsonUIObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B0DAF9251F8582005FDC74 /* JsonUIObject.swift */; };
+		54B0DAFC251F8582005FDC74 /* JsonUIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B0DAFA251F8582005FDC74 /* JsonUIManager.swift */; };
 		54C22A5A2518E1DC001947C4 /* JsonUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22A592518E1DC001947C4 /* JsonUI.swift */; };
 		54C22A702518E26E001947C4 /* _PullDownButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22A6F2518E26E001947C4 /* _PullDownButton.swift */; };
 		54C22A782518E2C3001947C4 /* Toggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22A772518E2C3001947C4 /* Toggle.swift */; };
@@ -239,6 +241,8 @@
 		54919FF2250A7A2F00767B94 /* chilkoottrail.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = chilkoottrail.jpg; sourceTree = "<group>"; };
 		54919FF3250A7A2F00767B94 /* rainbowlake.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = rainbowlake.jpg; sourceTree = "<group>"; };
 		5491A001250A7B2100767B94 /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		54B0DAF9251F8582005FDC74 /* JsonUIObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonUIObject.swift; sourceTree = "<group>"; };
+		54B0DAFA251F8582005FDC74 /* JsonUIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonUIManager.swift; sourceTree = "<group>"; };
 		54C22A592518E1DC001947C4 /* JsonUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonUI.swift; sourceTree = "<group>"; };
 		54C22A6F2518E26E001947C4 /* _PullDownButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _PullDownButton.swift; sourceTree = "<group>"; };
 		54C22A772518E2C3001947C4 /* Toggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toggle.swift; sourceTree = "<group>"; };
@@ -409,6 +413,8 @@
 				54C22AF12518E3FD001947C4 /* Foundation */,
 				546538F425166AB2003161DE /* JsonPreview.swift */,
 				54C22A592518E1DC001947C4 /* JsonUI.swift */,
+				54B0DAFA251F8582005FDC74 /* JsonUIManager.swift */,
+				54B0DAF9251F8582005FDC74 /* JsonUIObject.swift */,
 				544A378D250EE589007CC305 /* SampleView.swift */,
 				54C22A582518E1D3001947C4 /* SwiftUI */,
 			);
@@ -555,9 +561,25 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		54B0DB01251FB901005FDC74 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		54B0DB02251FB907005FDC74 /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Modifiers;
+			sourceTree = "<group>";
+		};
 		54C22A582518E1D3001947C4 /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				54B0DB02251FB907005FDC74 /* Modifiers */,
+				54B0DB01251FB901005FDC74 /* Views */,
 				54C22B2E2518E640001947C4 /* __ScaleToFitView.swift */,
 				54C22AD52518E396001947C4 /* _AligningContentProvider.swift */,
 				54C22AAF2518E37D001947C4 /* _BackgroundModifier.swift */,
@@ -754,9 +776,11 @@
 				54919FD8250A709500767B94 /* B03c_LandmarkRow.swift in Sources */,
 				54C22B1F2518E634001947C4 /* Divider.swift in Sources */,
 				544A378E250EE589007CC305 /* SampleView.swift in Sources */,
+				54B0DAFC251F8582005FDC74 /* JsonUIManager.swift in Sources */,
 				54C22BCB2518E9DB001947C4 /* Spacer.swift in Sources */,
 				54919FD9250A709500767B94 /* B02b_LandmarkRow.swift in Sources */,
 				54C22A782518E2C3001947C4 /* Toggle.swift in Sources */,
+				54B0DAFB251F8582005FDC74 /* JsonUIObject.swift in Sources */,
 				54919FBC250A6B5800767B94 /* A06b_ContentView.swift in Sources */,
 				54C22B902518E88B001947C4 /* _ConditionalContent.swift in Sources */,
 				54683702250D3AB100CE1AF1 /* B08b_LandmarkList.swift in Sources */,

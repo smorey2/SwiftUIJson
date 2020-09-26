@@ -7,7 +7,12 @@
 
 import SwiftUI
 
+extension ZStack: JsonUIObject {
+    var anyView: AnyView { AnyView(self) }
+}
+
 extension ZStack: Codable where Content : View, Content : Codable {
+
     enum CodingKeys: CodingKey {
         case root, content
     }

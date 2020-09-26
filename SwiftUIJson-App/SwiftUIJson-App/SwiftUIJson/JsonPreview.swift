@@ -21,6 +21,7 @@ public struct JsonPreview<Content>: View where Content: View {
     
     public init(@ViewBuilder content: () -> Content) {
         self.content = content()
+        // data
         do {
             let missing = "\(type(of: self.content).self) Not Codeable".data(using: .utf8)!
             data = try JsonUI.encode(view: self.content.body) ?? missing
@@ -28,12 +29,15 @@ public struct JsonPreview<Content>: View where Content: View {
         catch {
             data = error.localizedDescription.data(using: .utf8)!
         }
-        guard let body = try! JsonUI(json: data).body else {
-            data = "Not Decodeable".data(using: .utf8)!
-            content2 = AnyView(self.content)
-            return
+        // content2
+        do {
+            let jsonUI = try JsonUI(json: data)
+            content2 = jsonUI.anyView ?? AnyView(Text(""))
         }
-        content2 = AnyView(Text("Here")) //AnyView(body as View)
+        catch {
+            content2 = AnyView(Text("Error"))
+            data = error.localizedDescription.data(using: .utf8)!
+        }
     }
             
     public var body: some View {

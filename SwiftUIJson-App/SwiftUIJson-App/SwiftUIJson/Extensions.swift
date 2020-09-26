@@ -9,60 +9,20 @@
 import SwiftUI
 
 enum SuperInitCodingKeys: CodingKey {
-    case _type
-}
-
-extension Bundle {
-    static func className(forObj obj: Any) -> String! {
-"SwiftUIJson_App.SampleView"
-//        String(reflecting: type(of: obj).self)
-    }
-    
-//    static func typeFromString(_ typeName: String) -> AnyClass! {
-//        guard let type = main.classNamed(typeName) else { //NSClassFromString(typeName)
-//            fatalError("\(typeName) not found")
-//        }
-//        return type
-//    }
-    
-    enum ClassLoadError: Error {
-        case moduleNotFound
-        case classNotFound
-        case invalidClassType(loaded: String, expected: String)
-    }
-    
-//    func `class`<T>(ofType type: T.Type, named name: String? = nil) throws -> T.Type {
-//        let name = name ?? String(reflecting: type.self)
-//        guard name.components(separatedBy: ".").count > 1 else { throw ClassLoadError.moduleNotFound }
-//        guard let loadedClass = classNamed(name) else { throw ClassLoadError.classNotFound }
-////        return loadedClass
-//        guard let castedClass = loadedClass as? T.Type else { throw ClassLoadError.invalidClassType(loaded: name, expected: String(describing: type)) }
-//        return castedClass
-//    }
-
-    func object<T>(ofType type: T.Type, named name: String) throws -> T.Type {
-        for i in Bundle.main. {
-            print(i)
-        }
-        
-        guard name.components(separatedBy: ".").count > 1 else { throw ClassLoadError.moduleNotFound }
-        guard let loadedClass = classNamed(name) else { throw ClassLoadError.classNotFound }
-        guard let castedClass = loadedClass as? T.Type else { throw ClassLoadError.invalidClassType(loaded: name, expected: String(describing: type)) }
-        return castedClass
-    }
+    case type, inversion1, inversion2
 }
 
 extension Encoder {
     func superInit(for item: Any) throws {
         var container = self.container(keyedBy: SuperInitCodingKeys.self)
-        try container.encode(Bundle.className(forObj: item), forKey: ._type)
+        try container.encode(JsonUIManager.objectName(forObj: item), forKey: .type)
     }
 }
 
 extension Decoder {
     func superInit() throws -> Any {
         let container = try self.container(keyedBy: SuperInitCodingKeys.self)
-        let type = try Bundle.main.object(ofType: Decodable.self, named: try container.decode(String.self, forKey: ._type)) as! Decodable.Type
+        let type = try JsonUIManager.findObject(named: try container.decode(String.self, forKey: .type)) as! Decodable.Type
         return try type.init(from: self)
     }
 }

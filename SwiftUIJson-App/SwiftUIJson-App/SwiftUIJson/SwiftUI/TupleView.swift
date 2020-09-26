@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+//extension TupleView: JsonUIObject {}
 extension TupleView: Codable {
     public init(from decoder: Decoder) throws {
         var container = try decoder.unkeyedContainer()

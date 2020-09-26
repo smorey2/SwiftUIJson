@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+extension Text: JsonUIObject {
+    var anyView: AnyView { AnyView(self) }
+}
+
 extension Text: Codable {
     @frozen internal enum Storage  {
         case verbatim(String)

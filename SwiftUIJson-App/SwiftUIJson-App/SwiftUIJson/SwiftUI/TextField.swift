@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+extension TextField: JsonUIObject {
+    var anyView: AnyView { AnyView(self) }
+}
+
 extension TextField: Encodable where Label : View {
     public func encode(to encoder: Encoder) throws {
     }

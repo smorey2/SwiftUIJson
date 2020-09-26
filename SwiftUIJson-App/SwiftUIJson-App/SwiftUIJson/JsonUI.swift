@@ -8,16 +8,18 @@
 import SwiftUI
 
 public struct JsonUI: Codable {
-    private let value: Encodable?
     public let body: Any?
+    public var anyView: AnyView? {
+        guard let obj = body as? JsonUIObject else { return nil }
+        return obj.anyView
+    }
     
     public init(json: Data) throws {
         let decoder = JSONDecoder()
         self = try decoder.decode(JsonUI.self, from: json)
     }
     private init(from encoder: Encodable) {
-        value = encoder
-        body = nil
+        body = encoder
     }
 
     static func encode(view: Any) throws -> Data? {
@@ -40,12 +42,11 @@ public struct JsonUI: Codable {
     
     // Mark - Codable
     public init(from decoder: Decoder) throws {
-        value = nil
         body = try decoder.superInit()
-//        body = Text("Test")
+        //body = Text("kjlakdsfjsakljf")
     }
     public func encode(to encoder: Encoder) throws {
-        guard let value = value else {
+        guard let value = body as? Encodable else {
             fatalError()
         }
         try encoder.superInit(for: value)

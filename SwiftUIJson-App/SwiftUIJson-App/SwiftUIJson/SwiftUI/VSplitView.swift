@@ -11,6 +11,14 @@ import SwiftUI
 @available(iOS, unavailable)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
+extension VSplitView: JsonUIObject {
+    var anyView: AnyView { AnyView(self) }
+}
+
+@available(OSX 10.15, *)
+@available(iOS, unavailable)
+@available(tvOS, unavailable)
+@available(watchOS, unavailable)
 extension VSplitView: Encodable where Content : View {
     public func encode(to encoder: Encoder) throws {
     }

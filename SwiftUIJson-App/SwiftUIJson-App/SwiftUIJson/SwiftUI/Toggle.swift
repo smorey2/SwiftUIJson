@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+extension Toggle: JsonUIObject {
+    var anyView: AnyView { AnyView(self) }
+}
+
 extension Toggle: Encodable where Label : View {
     public func encode(to encoder: Encoder) throws {
     }

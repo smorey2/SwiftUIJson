@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+extension VStack: JsonUIObject {
+    var anyView: AnyView { AnyView(self) }
+}
+
 extension VStack: Codable where Content : View, Content : Codable {
     enum CodingKeys: CodingKey {
         case root, content
