@@ -11,9 +11,9 @@ public struct JsonUI: Codable {
     private let value: Encodable?
     public let body: Any?
     
-    public init(json: Data) {
+    public init(json: Data) throws {
         let decoder = JSONDecoder()
-        self = try! decoder.decode(JsonUI.self, from: json)
+        self = try decoder.decode(JsonUI.self, from: json)
     }
     private init(from encoder: Encodable) {
         value = encoder

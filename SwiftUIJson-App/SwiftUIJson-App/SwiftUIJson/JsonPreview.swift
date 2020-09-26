@@ -28,7 +28,7 @@ public struct JsonPreview<Content>: View where Content: View {
         catch {
             data = error.localizedDescription.data(using: .utf8)!
         }
-        guard let body = JsonUI(json: data).body else {
+        guard let body = try! JsonUI(json: data).body else {
             data = "Not Decodeable".data(using: .utf8)!
             content2 = AnyView(self.content)
             return
