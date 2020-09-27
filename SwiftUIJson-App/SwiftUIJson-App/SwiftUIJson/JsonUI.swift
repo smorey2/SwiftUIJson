@@ -5,6 +5,7 @@
 //  Copyright © 2020 Sky Morey. All rights reserved.
 //
 
+// https://github.com/Cosmo/OpenSwiftUI
 import SwiftUI
 
 public struct JsonUI: Codable {

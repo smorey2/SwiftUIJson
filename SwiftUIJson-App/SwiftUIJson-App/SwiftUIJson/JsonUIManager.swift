@@ -9,55 +9,15 @@
 import SwiftUI
 
 class JsonUIManager {
-    static var objectTypes = [String:Any.Type]()
     static var instance = JsonUIManager()
     
-    private init() {
-        JsonUIManager.registerDefault()
-    }
+    private init() { JsonUIManager.registerDefault() }
+    static func ensure() { _ = instance }
 
-    static func ensure() {
-        _ = instance
-    }
-        
-    // MARK - Object
-    
-    static func objectName(forObj obj: Any) -> String! {
-        // "SwiftUIJson_App.SampleView"
-        String(reflecting: type(of: obj).self)
-    }
-    
-    enum FindObjectError: Error {
-        case moduleNotFound
-        case typeNotFound
-        case invalidType(loaded: String, expected: String)
-    }
-    
-    static func findObject(named name: String) throws -> Any.Type {
-        ensure()
-        guard name.components(separatedBy: ".").count > 1 else { throw FindObjectError.moduleNotFound }
-        guard let loadedType = find(name) else { throw FindObjectError.typeNotFound }
-        return loadedType
-    }
-    
-//    static func findObject<T>(ofType type: T.Type, named name: String) throws -> T.Type {
-//        ensure()
-//        guard name.components(separatedBy: ".").count > 1 else { throw FindObjectError.moduleNotFound }
-//        guard let loadedType = find(name) else { throw FindObjectError.typeNotFound }
-//        let abc = loadedType as? T.Type
-//        guard let castedType = loadedType as? T.Type else { throw FindObjectError.invalidType(loaded: name, expected: String(describing: type)) }
-//        return castedType
-//    }
-    
-    static func find(_ name: String) -> Any.Type? {
-        guard let objectType = objectTypes[name] else { return nil }
-        return objectType
-    }
-    
     // MARK - Register
     
     static func register<T>(_ type: T.Type) {
-        objectTypes[String(reflecting: type)] = type
+        TypeManager.knownType(type)
     }
     
     static func registerDefault() {
@@ -102,7 +62,6 @@ class JsonUIManager {
         register(Section<AnyView, AnyView, AnyView>.self)
         register(SecureField<AnyView>.self)
         register(Slider<AnyView, AnyView>.self)
-        register(Spacer.self)
         register(Spacer.self)
 //        register(SubscriptionView<AnyPublisherType, AnyView>.self)
         register(Text.self)

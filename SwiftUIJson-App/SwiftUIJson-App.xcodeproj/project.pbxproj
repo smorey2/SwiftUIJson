@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		540169A925212CC200F51EB4 /* TypeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540169A825212CC200F51EB4 /* TypeManager.swift */; };
 		54431542251687AA00BFDD83 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54431541251687AA00BFDD83 /* ContentView.swift */; };
 		544315502517E59100BFDD83 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5443154F2517E59100BFDD83 /* Extensions.swift */; };
 		544A378E250EE589007CC305 /* SampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544A378D250EE589007CC305 /* SampleView.swift */; };
@@ -97,7 +98,7 @@
 		54C22AAC2518E37C001947C4 /* _DisclosureIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22AAB2518E37C001947C4 /* _DisclosureIndicator.swift */; };
 		54C22AB02518E37D001947C4 /* _BackgroundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22AAF2518E37D001947C4 /* _BackgroundModifier.swift */; };
 		54C22AB42518E380001947C4 /* SecureField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22AB32518E380001947C4 /* SecureField.swift */; };
-		54C22AB82518E381001947C4 /* _VariadicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22AB72518E381001947C4 /* _VariadicView.swift */; };
+		54C22AB82518E381001947C4 /* VariadicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22AB72518E381001947C4 /* VariadicView.swift */; };
 		54C22ABC2518E383001947C4 /* Stepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22ABB2518E383001947C4 /* Stepper.swift */; };
 		54C22AC02518E384001947C4 /* _WKStoryboardContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22ABF2518E384001947C4 /* _WKStoryboardContent.swift */; };
 		54C22AC42518E389001947C4 /* PasteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22AC32518E389001947C4 /* PasteButton.swift */; };
@@ -136,8 +137,8 @@
 		54C22B6D2518E751001947C4 /* _MaskEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B692518E751001947C4 /* _MaskEffect.swift */; };
 		54C22B872518E886001947C4 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B862518E886001947C4 /* Button.swift */; };
 		54C22B8C2518E88A001947C4 /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B8B2518E88A001947C4 /* DatePicker.swift */; };
-		54C22B8D2518E88A001947C4 /* _UnaryViewAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B8A2518E889001947C4 /* _UnaryViewAdaptor.swift */; };
-		54C22B902518E88B001947C4 /* _ConditionalContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B8F2518E88B001947C4 /* _ConditionalContent.swift */; };
+		54C22B8D2518E88A001947C4 /* UnaryViewAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B8A2518E889001947C4 /* UnaryViewAdaptor.swift */; };
+		54C22B902518E88B001947C4 /* ConditionalContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B8F2518E88B001947C4 /* ConditionalContent.swift */; };
 		54C22B9A2518E88E001947C4 /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B992518E88E001947C4 /* Form.swift */; };
 		54C22B9B2518E88E001947C4 /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B982518E88E001947C4 /* EmptyView.swift */; };
 		54C22B9C2518E88E001947C4 /* Never.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B942518E88E001947C4 /* Never.swift */; };
@@ -146,7 +147,7 @@
 		54C22B9F2518E88E001947C4 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22B972518E88E001947C4 /* Image.swift */; };
 		54C22BB92518E9B1001947C4 /* UIViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22BB82518E9B1001947C4 /* UIViewRepresentable.swift */; };
 		54C22BC32518E9D9001947C4 /* TupleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22BC22518E9D9001947C4 /* TupleView.swift */; };
-		54C22BC72518E9DA001947C4 /* _ViewModifier_Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22BC62518E9DA001947C4 /* _ViewModifier_Content.swift */; };
+		54C22BC72518E9DA001947C4 /* ViewModifier_Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22BC62518E9DA001947C4 /* ViewModifier_Content.swift */; };
 		54C22BCB2518E9DB001947C4 /* Spacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22BCA2518E9DB001947C4 /* Spacer.swift */; };
 		54C22C052519644B001947C4 /* EmptyAnimatableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C22C042519644B001947C4 /* EmptyAnimatableData.swift */; };
 /* End PBXBuildFile section */
@@ -162,6 +163,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		540169A825212CC200F51EB4 /* TypeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeManager.swift; sourceTree = "<group>"; };
 		54431541251687AA00BFDD83 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5443154F2517E59100BFDD83 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		544A378D250EE589007CC305 /* SampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleView.swift; sourceTree = "<group>"; };
@@ -256,7 +258,7 @@
 		54C22AAB2518E37C001947C4 /* _DisclosureIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _DisclosureIndicator.swift; sourceTree = "<group>"; };
 		54C22AAF2518E37D001947C4 /* _BackgroundModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _BackgroundModifier.swift; sourceTree = "<group>"; };
 		54C22AB32518E380001947C4 /* SecureField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureField.swift; sourceTree = "<group>"; };
-		54C22AB72518E381001947C4 /* _VariadicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _VariadicView.swift; sourceTree = "<group>"; };
+		54C22AB72518E381001947C4 /* VariadicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariadicView.swift; sourceTree = "<group>"; };
 		54C22ABB2518E383001947C4 /* Stepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stepper.swift; sourceTree = "<group>"; };
 		54C22ABF2518E384001947C4 /* _WKStoryboardContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _WKStoryboardContent.swift; sourceTree = "<group>"; };
 		54C22AC32518E389001947C4 /* PasteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteButton.swift; sourceTree = "<group>"; };
@@ -294,9 +296,9 @@
 		54C22B682518E751001947C4 /* HStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HStack.swift; sourceTree = "<group>"; };
 		54C22B692518E751001947C4 /* _MaskEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _MaskEffect.swift; sourceTree = "<group>"; };
 		54C22B862518E886001947C4 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
-		54C22B8A2518E889001947C4 /* _UnaryViewAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _UnaryViewAdaptor.swift; sourceTree = "<group>"; };
+		54C22B8A2518E889001947C4 /* UnaryViewAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnaryViewAdaptor.swift; sourceTree = "<group>"; };
 		54C22B8B2518E88A001947C4 /* DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
-		54C22B8F2518E88B001947C4 /* _ConditionalContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _ConditionalContent.swift; sourceTree = "<group>"; };
+		54C22B8F2518E88B001947C4 /* ConditionalContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalContent.swift; sourceTree = "<group>"; };
 		54C22B942518E88E001947C4 /* Never.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Never.swift; sourceTree = "<group>"; };
 		54C22B952518E88E001947C4 /* UIHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHostingController.swift; sourceTree = "<group>"; };
 		54C22B962518E88E001947C4 /* Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Picker.swift; sourceTree = "<group>"; };
@@ -305,7 +307,7 @@
 		54C22B992518E88E001947C4 /* Form.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form.swift; sourceTree = "<group>"; };
 		54C22BB82518E9B1001947C4 /* UIViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewRepresentable.swift; sourceTree = "<group>"; };
 		54C22BC22518E9D9001947C4 /* TupleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TupleView.swift; sourceTree = "<group>"; };
-		54C22BC62518E9DA001947C4 /* _ViewModifier_Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _ViewModifier_Content.swift; sourceTree = "<group>"; };
+		54C22BC62518E9DA001947C4 /* ViewModifier_Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifier_Content.swift; sourceTree = "<group>"; };
 		54C22BCA2518E9DB001947C4 /* Spacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacer.swift; sourceTree = "<group>"; };
 		54C22C042519644B001947C4 /* EmptyAnimatableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyAnimatableData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -328,6 +330,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5401699B251FF45800F51EB4 /* Shapes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Shapes;
+			sourceTree = "<group>";
+		};
 		54683704250E659400CE1AF1 /* E - Animating Views and Transitions */ = {
 			isa = PBXGroup;
 			children = (
@@ -417,6 +426,7 @@
 				54B0DAF9251F8582005FDC74 /* JsonUIObject.swift */,
 				544A378D250EE589007CC305 /* SampleView.swift */,
 				54C22A582518E1D3001947C4 /* SwiftUI */,
+				540169A825212CC200F51EB4 /* TypeManager.swift */,
 			);
 			path = SwiftUIJson;
 			sourceTree = "<group>";
@@ -564,26 +574,10 @@
 		54B0DB01251FB901005FDC74 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		54B0DB02251FB907005FDC74 /* Modifiers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Modifiers;
-			sourceTree = "<group>";
-		};
-		54C22A582518E1D3001947C4 /* SwiftUI */ = {
-			isa = PBXGroup;
-			children = (
-				54B0DB02251FB907005FDC74 /* Modifiers */,
-				54B0DB01251FB901005FDC74 /* Views */,
+				54C22ABF2518E384001947C4 /* _WKStoryboardContent.swift */,
 				54C22B2E2518E640001947C4 /* __ScaleToFitView.swift */,
 				54C22AD52518E396001947C4 /* _AligningContentProvider.swift */,
 				54C22AAF2518E37D001947C4 /* _BackgroundModifier.swift */,
-				54C22B8F2518E88B001947C4 /* _ConditionalContent.swift */,
 				54C22B1C2518E632001947C4 /* _DelayedPreferenceView.swift */,
 				54C22B542518E747001947C4 /* _DetachedView.swift */,
 				54C22AAB2518E37C001947C4 /* _DisclosureIndicator.swift */,
@@ -594,21 +588,16 @@
 				54C22B5D2518E74F001947C4 /* _ResolvedPopUpButton.swift */,
 				54C22B642518E751001947C4 /* _ShapeView.swift */,
 				54C22B502518E744001947C4 /* _SymmetricallyScaledText.swift */,
-				54C22B8A2518E889001947C4 /* _UnaryViewAdaptor.swift */,
-				54C22AB72518E381001947C4 /* _VariadicView.swift */,
-				54C22BC62518E9DA001947C4 /* _ViewModifier_Content.swift */,
-				54C22ABF2518E384001947C4 /* _WKStoryboardContent.swift */,
 				54C22B202518E635001947C4 /* AnyView.swift */,
 				54C22B862518E886001947C4 /* Button.swift */,
 				54C22ADF2518E3A5001947C4 /* Color.swift */,
+				54C22B8F2518E88B001947C4 /* ConditionalContent.swift */,
 				54C22A952518E2E1001947C4 /* ContextMenu.swift */,
 				54C22B8B2518E88A001947C4 /* DatePicker.swift */,
 				54C22B1E2518E634001947C4 /* Divider.swift */,
 				54C22AA72518E37B001947C4 /* EditButton.swift */,
-				54C22C042519644B001947C4 /* EmptyAnimatableData.swift */,
 				54C22B982518E88E001947C4 /* EmptyView.swift */,
 				54C22A912518E2E0001947C4 /* EquatableView.swift */,
-				54C22AE72518E3B4001947C4 /* Font.swift */,
 				54C22B2F2518E640001947C4 /* ForEach.swift */,
 				54C22B992518E88E001947C4 /* Form.swift */,
 				54C22B2C2518E63F001947C4 /* GeometryReader.swift */,
@@ -618,7 +607,6 @@
 				54C22B682518E751001947C4 /* HStack.swift */,
 				54C22B972518E88E001947C4 /* Image.swift */,
 				54C22B2A2518E63F001947C4 /* List.swift */,
-				544A3791250FAD04007CC305 /* LocalizedStringKey.swift */,
 				54C22A8D2518E2DE001947C4 /* MenuButton.swift */,
 				54C22A812518E2DA001947C4 /* ModifiedContent.swift */,
 				54C22ADB2518E39C001947C4 /* NavigationLink.swift */,
@@ -629,6 +617,7 @@
 				54C22B2B2518E63F001947C4 /* ScrollView.swift */,
 				54C22B162518E62A001947C4 /* Section.swift */,
 				54C22AB32518E380001947C4 /* SecureField.swift */,
+				5401699B251FF45800F51EB4 /* Shapes */,
 				54C22AC52518E38B001947C4 /* Slider.swift */,
 				54C22BCA2518E9DB001947C4 /* Spacer.swift */,
 				54C22ABB2518E383001947C4 /* Stepper.swift */,
@@ -644,6 +633,28 @@
 				54C22B262518E638001947C4 /* VSplitView.swift */,
 				54C22B222518E636001947C4 /* VStack.swift */,
 				54C22B5C2518E74F001947C4 /* ZStack.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		54B0DB02251FB907005FDC74 /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				54C22BC62518E9DA001947C4 /* ViewModifier_Content.swift */,
+			);
+			path = Modifiers;
+			sourceTree = "<group>";
+		};
+		54C22A582518E1D3001947C4 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				54C22C042519644B001947C4 /* EmptyAnimatableData.swift */,
+				54C22AE72518E3B4001947C4 /* Font.swift */,
+				544A3791250FAD04007CC305 /* LocalizedStringKey.swift */,
+				54B0DB02251FB907005FDC74 /* Modifiers */,
+				54C22B8A2518E889001947C4 /* UnaryViewAdaptor.swift */,
+				54C22AB72518E381001947C4 /* VariadicView.swift */,
+				54B0DB01251FB901005FDC74 /* Views */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -782,7 +793,7 @@
 				54C22A782518E2C3001947C4 /* Toggle.swift in Sources */,
 				54B0DAFB251F8582005FDC74 /* JsonUIObject.swift in Sources */,
 				54919FBC250A6B5800767B94 /* A06b_ContentView.swift in Sources */,
-				54C22B902518E88B001947C4 /* _ConditionalContent.swift in Sources */,
+				54C22B902518E88B001947C4 /* ConditionalContent.swift in Sources */,
 				54683702250D3AB100CE1AF1 /* B08b_LandmarkList.swift in Sources */,
 				54919FE4250A78D300767B94 /* B05e_LandmarkList.swift in Sources */,
 				54919FE2250A709500767B94 /* B03a_LandmarkRow.swift in Sources */,
@@ -822,6 +833,7 @@
 				54C22B172518E62A001947C4 /* Section.swift in Sources */,
 				54919FDD250A709500767B94 /* B04a_LandmarkList.swift in Sources */,
 				54C22ACE2518E394001947C4 /* TextField.swift in Sources */,
+				540169A925212CC200F51EB4 /* TypeManager.swift in Sources */,
 				54C22B9F2518E88E001947C4 /* Image.swift in Sources */,
 				54683701250D3AB100CE1AF1 /* B08c_LandmarkList.swift in Sources */,
 				54919FDB250A709500767B94 /* B05b_LandmarkList.swift in Sources */,
@@ -843,7 +855,7 @@
 				54C22B1D2518E632001947C4 /* _DelayedPreferenceView.swift in Sources */,
 				546836F2250D32B600CE1AF1 /* B06b_LandmarkList.swift in Sources */,
 				54C22AC62518E38B001947C4 /* Slider.swift in Sources */,
-				54C22BC72518E9DA001947C4 /* _ViewModifier_Content.swift in Sources */,
+				54C22BC72518E9DA001947C4 /* ViewModifier_Content.swift in Sources */,
 				54919F9C250A67DF00767B94 /* A03f_ContentView.swift in Sources */,
 				54C22BB92518E9B1001947C4 /* UIViewRepresentable.swift in Sources */,
 				54C22AE02518E3A5001947C4 /* Color.swift in Sources */,
@@ -851,7 +863,7 @@
 				54C22ABC2518E383001947C4 /* Stepper.swift in Sources */,
 				54919FDE250A709500767B94 /* LandmarkDetail.swift in Sources */,
 				546836FD250D35FE00CE1AF1 /* B07f_LandmarkList.swift in Sources */,
-				54C22B8D2518E88A001947C4 /* _UnaryViewAdaptor.swift in Sources */,
+				54C22B8D2518E88A001947C4 /* UnaryViewAdaptor.swift in Sources */,
 				54C22B8C2518E88A001947C4 /* DatePicker.swift in Sources */,
 				5491A002250A7B2100767B94 /* Data.swift in Sources */,
 				54C22AC42518E389001947C4 /* PasteButton.swift in Sources */,
@@ -889,7 +901,7 @@
 				54919FE1250A709500767B94 /* B02a_LandmarkRow.swift in Sources */,
 				54919F8D250A65D200767B94 /* A03a_ContentView.swift in Sources */,
 				54C22B9D2518E88E001947C4 /* Picker.swift in Sources */,
-				54C22AB82518E381001947C4 /* _VariadicView.swift in Sources */,
+				54C22AB82518E381001947C4 /* VariadicView.swift in Sources */,
 				54919FBF250A6B5800767B94 /* A06d_ContentView.swift in Sources */,
 				544315502517E59100BFDD83 /* Extensions.swift in Sources */,
 				54C22B302518E640001947C4 /* __ScaleToFitView.swift in Sources */,

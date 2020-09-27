@@ -15,14 +15,15 @@ enum SuperInitCodingKeys: CodingKey {
 extension Encoder {
     func superInit(for item: Any) throws {
         var container = self.container(keyedBy: SuperInitCodingKeys.self)
-        try container.encode(JsonUIManager.objectName(forObj: item), forKey: .type)
+        try container.encode(TypeManager.typeName(forObj: item), forKey: .type)
     }
 }
 
 extension Decoder {
     func superInit() throws -> Any {
+        JsonUIManager.ensure()
         let container = try self.container(keyedBy: SuperInitCodingKeys.self)
-        let type = try JsonUIManager.findObject(named: try container.decode(String.self, forKey: .type)) as! Decodable.Type
+        let type = try TypeManager.typeParse(named: try container.decode(String.self, forKey: .type)) as! Decodable.Type
         return try type.init(from: self)
     }
 }
