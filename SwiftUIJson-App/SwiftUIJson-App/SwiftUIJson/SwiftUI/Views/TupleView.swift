@@ -14,7 +14,7 @@ extension TupleView: Codable {
         var items = [Any]()
         while !container.isAtEnd {
             let baseDecoder = try container.superDecoder()
-            let item = try TypeManager.decodeSuper(to: baseDecoder)
+            let item = try TypeManager.decodeSuper(from: baseDecoder)
             items.append(item)
         }
         let t = items.withUnsafeBytes {

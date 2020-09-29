@@ -25,20 +25,32 @@ class TypeManager {
     
     // MARK - Super
 
-    public static func encodeSuper(to encoder: Encoder, for item: Any) throws {
+    public static func encodeSuper(to encoder: Encoder, for obj: Any) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(typeName(forObj: item), forKey: .type)
+        try container.encode(typeName(for: obj), forKey: .type)
     }
 
-    public static func decodeSuper(to decoder: Decoder) throws -> Any {
+    public static func decodeSuper(from decoder: Decoder) throws -> Any {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let typeName = try container.decode(String.self, forKey: .type)
-        guard let type = try typeParse(named: typeName) as? Decodable.Type else {
+        guard let decodableType = try typeParse(named: typeName) as? Decodable.Type else {
             throw TypeManagerError.typeNotCodable(named: typeName)
         }
-        return try type.init(from: decoder)
+        return try decodableType.init(from: decoder)
+    }
+    
+    public static func decodeSuper(from decoder: Decoder, for type: Any.Type) throws -> Any {
+        guard let decodableType = type as? Decodable.Type else {
+            throw TypeManagerError.typeNotCodable(named: typeName(for: type))
+        }
+        return try decodableType.init(from: decoder)
     }
 
+    public static func decodeSuperName(from decoder: Decoder) throws -> String {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        return try container.decode(String.self, forKey: .type)
+    }
+    
     // MARK - Known Type
     
     static var knownTypes = [String:Any.Type]()
@@ -55,7 +67,7 @@ class TypeManager {
     
     // MARK - Type Parse
     
-    public static func typeName(forObj obj: Any) -> String! {
+    public static func typeName(for obj: Any) -> String! {
         String(reflecting: type(of: obj).self).replacingOccurrences(of: " ", with: "")
     }
     

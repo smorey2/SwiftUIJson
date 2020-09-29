@@ -15,12 +15,12 @@ public struct JsonUI: Codable {
         return obj.anyView
     }
     
-    public init(json: Data) throws {
+    public init(from json: Data) throws {
         let _ = JsonUI.registered
         let decoder = JSONDecoder()
         self = try decoder.decode(JsonUI.self, from: json)
     }
-    private init(from encoder: Encodable) {
+    private init(to encoder: Encodable) {
         let _ = JsonUI.registered
         body = encoder
     }
@@ -29,23 +29,45 @@ public struct JsonUI: Codable {
         guard let value = view as? Encodable else {
             return nil
         }
-        let root = JsonUI(from: value)
+        let root = JsonUI(to: value)
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         return try encoder.encode(root)
     }
-    static func encode(anyView: Any, to encoder: Encoder) throws {
-        guard let anyView = anyView as? Encodable else {
+    
+    // Mark - AnyView
+    static func decodeAnyView(from decoder: Decoder) throws -> AnyView {
+        return AnyView(Text("HERE"))
+//        print(decoder.codingPath.debugDescription)
+//
+//        let typeName = try TypeManager.decodeSuperName(from: decoder)
+//        let parts = typeName.components(separatedBy: "<")
+//        if parts.count != 1 {
+//            fatalError()
+//        }
+//
+//        var body: Any
+//        switch parts[0] {
+//        case "TupleView": body = try TypeManager.decodeSuper(from: decoder, for: TupleView<AnyObject>.self)
+//        default: fatalError()
+//        }
+//
+//        guard let obj = body as? JsonView else { fatalError() }
+//        return obj.anyView
+    }
+    
+    static func encodeAnyView(to encoder: Encoder, for view: Any) throws {
+        guard let view = view as? Encodable else {
             print("encode:anyView")
             return
         }
-        try TypeManager.encodeSuper(to: encoder, for: anyView)
-        try anyView.encode(to: encoder)
+        try TypeManager.encodeSuper(to: encoder, for: view)
+        try view.encode(to: encoder)
     }
     
     // Mark - Codable
     public init(from decoder: Decoder) throws {
-        body = try TypeManager.decodeSuper(to: decoder)
+        body = try TypeManager.decodeSuper(from: decoder)
         //body = Text("kjlakdsfjsakljf")
     }
     public func encode(to encoder: Encoder) throws {

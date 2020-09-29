@@ -31,7 +31,7 @@ public struct JsonPreview<Content>: View where Content: View {
         }
         // content2
         do {
-            let jsonUI = try JsonUI(json: data)
+            let jsonUI = try JsonUI(from: data)
             content2 = jsonUI.anyView ?? AnyView(Text(""))
         }
         catch {
