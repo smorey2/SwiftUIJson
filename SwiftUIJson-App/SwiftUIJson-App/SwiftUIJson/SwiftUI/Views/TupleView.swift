@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-//extension TupleView: JsonUIObject {}
+//extension TupleView: JsonView {}
 extension TupleView: Codable {
     public init(from decoder: Decoder) throws {
         var container = try decoder.unkeyedContainer()
         var items = [Any]()
         while !container.isAtEnd {
             let baseDecoder = try container.superDecoder()
-            let item = try baseDecoder.superInit()
+            let item = try TypeManager.decodeSuper(to: baseDecoder)
             items.append(item)
         }
         let t = items.withUnsafeBytes {
@@ -29,7 +29,7 @@ extension TupleView: Codable {
                 continue
             }
             let baseEncoder = container.superEncoder()
-            try baseEncoder.superInit(for: value)
+            try TypeManager.encodeSuper(to: baseEncoder, for: value)
             try value.encode(to: baseEncoder)
         }
     }

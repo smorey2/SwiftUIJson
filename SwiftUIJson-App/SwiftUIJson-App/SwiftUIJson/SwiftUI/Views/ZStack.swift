@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension ZStack: JsonUIObject {
+extension ZStack: JsonView {
     var anyView: AnyView { AnyView(self) }
 }
 

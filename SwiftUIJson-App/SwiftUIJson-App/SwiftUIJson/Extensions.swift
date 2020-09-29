@@ -8,26 +8,6 @@
 
 import SwiftUI
 
-enum SuperInitCodingKeys: CodingKey {
-    case type, inversion1, inversion2
-}
-
-extension Encoder {
-    func superInit(for item: Any) throws {
-        var container = self.container(keyedBy: SuperInitCodingKeys.self)
-        try container.encode(TypeManager.typeName(forObj: item), forKey: .type)
-    }
-}
-
-extension Decoder {
-    func superInit() throws -> Any {
-        JsonUIManager.ensure()
-        let container = try self.container(keyedBy: SuperInitCodingKeys.self)
-        let type = try TypeManager.typeParse(named: try container.decode(String.self, forKey: .type)) as! Decodable.Type
-        return try type.init(from: self)
-    }
-}
-
 extension KeyedEncodingContainer where K : CodingKey {
     public mutating func encodeKey(forKey key: KeyedEncodingContainer<K>.Key) throws {
         try encode("1", forKey: key)

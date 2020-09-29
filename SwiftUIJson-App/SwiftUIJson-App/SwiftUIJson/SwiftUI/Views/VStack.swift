@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension VStack: JsonUIObject {
+extension VStack: JsonView {
     var anyView: AnyView { AnyView(self) }
 }
 

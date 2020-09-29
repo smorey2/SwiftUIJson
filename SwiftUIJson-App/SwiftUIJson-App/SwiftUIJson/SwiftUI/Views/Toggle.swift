@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension Toggle: JsonUIObject {
+extension Toggle: JsonView {
     var anyView: AnyView { AnyView(self) }
 }
 

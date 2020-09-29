@@ -1,5 +1,5 @@
 //
-//  JsonUIObject.swift
+//  JsonView.swift
 //  Glyph
 //
 //  Created by Sky Morey on 8/22/20.
@@ -8,6 +8,6 @@
 
 import SwiftUI
 
-protocol JsonUIObject {
+protocol JsonView {
     var anyView: AnyView { get }
 }

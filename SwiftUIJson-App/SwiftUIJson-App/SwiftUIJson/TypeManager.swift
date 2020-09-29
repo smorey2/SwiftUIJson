@@ -11,6 +11,34 @@ import SwiftUI
 // https://www.raywenderlich.com/7181017-unsafe-swift-using-pointers-and-interacting-with-c
 
 class TypeManager {
+    enum CodingKeys: CodingKey {
+        case type, inversion1, inversion2
+    }
+    
+    enum TypeManagerError: Error {
+        case moduleNotFound
+        case typeNotFound
+        case typeParseError
+        case typeNameError(actual: String, expected: String)
+        case typeNotCodable(named: String)
+    }
+    
+    // MARK - Super
+
+    public static func encodeSuper(to encoder: Encoder, for item: Any) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(typeName(forObj: item), forKey: .type)
+    }
+
+    public static func decodeSuper(to decoder: Decoder) throws -> Any {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let typeName = try container.decode(String.self, forKey: .type)
+        guard let type = try typeParse(named: typeName) as? Decodable.Type else {
+            throw TypeManagerError.typeNotCodable(named: typeName)
+        }
+        return try type.init(from: decoder)
+    }
+
     // MARK - Known Type
     
     static var knownTypes = [String:Any.Type]()
@@ -27,20 +55,13 @@ class TypeManager {
     
     // MARK - Type Parse
     
-    enum TypeParseError: Error {
-        case moduleNotFound
-        case typeNotFound
-        case typeParseError
-        case typeNameError(actual: String, expected: String)
-    }
-    
     public static func typeName(forObj obj: Any) -> String! {
         String(reflecting: type(of: obj).self).replacingOccurrences(of: " ", with: "")
     }
     
     public static func typeParse(named name: String) throws -> Any.Type {
         if let knownType = knownTypes[name] { return knownType }
-        guard name.components(separatedBy: ".").count > 1 else { throw TypeParseError.moduleNotFound }
+        guard name.components(separatedBy: ".").count > 1 else { throw TypeManagerError.moduleNotFound }
         let tokens = typeParse(tokens: name)
         var knownType: Any.Type = String.self
         var knownName = ""
@@ -74,10 +95,10 @@ class TypeManager {
             else { stack.append((token.op, token.value, "")) }
         }
         guard stack.count == 1, let first = stack.first, first.op == "t" else {
-            throw TypeParseError.typeParseError
+            throw TypeManagerError.typeParseError
         }
         guard name == knownName else {
-            throw TypeParseError.typeNameError(actual: name, expected: knownName)
+            throw TypeManagerError.typeNameError(actual: name, expected: knownName)
         }
         knownType = first.value as! Any.Type
         knownTypes[name] = knownType
@@ -104,46 +125,51 @@ class TypeManager {
     
     static func typeParse(knownName: String) throws -> Any.Type {
         if let knownType = knownTypes[knownName] { return knownType }
-        throw TypeParseError.typeNotFound
+        throw TypeManagerError.typeNotFound
     }
     
     static func typeParse(knownName: String, tuple: [Any.Type]) throws -> Any.Type {
         if let knownType = knownTypes[knownName] { return knownType }
-
         var type: Any.Type
         switch tuple.count {
-        case 2: type = typeTuple(tuple[0] as! Text.Type, tuple[1] as! Text.Type)
-        case 3: type = typeTuple(tuple[0] as! Text.Type, tuple[1] as! Text.Type, tuple[2] as! Text.Type)
+        case 1: type = (JsonView).Type.self
+        case 2: type = (JsonView, JsonView).Type.self
+        case 3: type = (JsonView, JsonView, JsonView).Type.self
+        case 4: type = (JsonView, JsonView, JsonView, JsonView).Type.self
+        case 5: type = (JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
+        case 6: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
+        case 7: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
+        case 8: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
+        case 9: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
+        case 10: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
         default: fatalError()
         }
         knownTypes[knownName] = type
-        
         return knownTypes[knownName]!
     }
-    static func typeTuple<T1, T2>(_ t1: T1.Type, _ t2: T2.Type) -> Any.Type { type(of: (defaultValue(t1), defaultValue(t2))).self }
-    static func typeTuple<T1, T2, T3>(_ t1: T1.Type, _ t2: T2.Type, _ t3: T3.Type) -> Any.Type { type(of: (defaultValue(t1), defaultValue(t2), defaultValue(t3))).self }
 
-    
     static func typeParse(knownName: String, genericName: String, types: [Any.Type]) throws -> Any.Type {
         if let knownType = knownTypes[knownName] { return knownType }
-        knownTypes[knownName] = String.self
+        guard let type = knownGenerics[genericName] else { throw TypeManagerError.typeNotFound }
+        knownTypes[knownName] = type
         return knownTypes[knownName]!
     }
     
-    static func defaultValue<T>(_ t: T.Type) -> T {
-        let ptr = UnsafeMutablePointer<T>.allocate(capacity: 1)
-        let val = ptr.withMemoryRebound(to: T.self, capacity: 1) { $0[0] }
-        defer { ptr.deallocate() }
-        return val
-    }
-    
-//    static func defaultValue<T>(_ t: T.Type) -> T {
-//        let ptr = UnsafeMutableRawPointer.allocate(
-//            byteCount: MemoryLayout<T>.size,
-//            alignment: MemoryLayout<T>.alignment)
-//        let val = ptr.bindMemory(to: T.self, capacity: 1)[0]
-//        defer { ptr.deallocate() }
-//        return val
-//    }
-
+    //    static func typeTuple<T1, T2>(_ t1: T1.Type, _ t2: T2.Type) -> Any.Type { type(of: (defaultValue(t1), defaultValue(t2))).self }
+    //    static func typeTuple<T1, T2, T3>(_ t1: T1.Type, _ t2: T2.Type, _ t3: T3.Type) -> Any.Type { type(of: (defaultValue(t1), defaultValue(t2), defaultValue(t3))).self }
+    //    static func defaultValue<T>(_ t: T.Type) -> T {
+    //        let ptr = UnsafeMutablePointer<T>.allocate(capacity: 1)
+    //        let val = ptr.withMemoryRebound(to: T.self, capacity: 1) { $0[0] }
+    //        defer { ptr.deallocate() }
+    //        return val
+    //    }
+    //
+    //    static func defaultValue<T>(_ t: T.Type) -> T {
+    //        let ptr = UnsafeMutableRawPointer.allocate(
+    //            byteCount: MemoryLayout<T>.size,
+    //            alignment: MemoryLayout<T>.alignment)
+    //        let val = ptr.bindMemory(to: T.self, capacity: 1)[0]
+    //        defer { ptr.deallocate() }
+    //        return val
+    //    }
 }

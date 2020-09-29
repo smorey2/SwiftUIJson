@@ -36,7 +36,7 @@ public struct JsonPreview<Content>: View where Content: View {
         }
         catch {
             content2 = AnyView(Text("Error"))
-            data = error.localizedDescription.data(using: .utf8)!
+            data = error.localizedDescription.data(using: .utf8)! + "\n".data(using: .utf8)! + data
         }
     }
             

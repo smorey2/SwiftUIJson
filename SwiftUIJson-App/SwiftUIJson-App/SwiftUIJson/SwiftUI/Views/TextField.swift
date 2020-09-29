@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension TextField: JsonUIObject {
+extension TextField: JsonView {
     var anyView: AnyView { AnyView(self) }
 }
 

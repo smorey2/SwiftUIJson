@@ -11,7 +11,7 @@ import SwiftUI
 @available(iOS, unavailable)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
-extension VSplitView: JsonUIObject {
+extension VSplitView: JsonView {
     var anyView: AnyView { AnyView(self) }
 }
 
