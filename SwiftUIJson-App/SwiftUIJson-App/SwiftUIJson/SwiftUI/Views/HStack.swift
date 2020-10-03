@@ -18,7 +18,7 @@ extension HStack: Codable where Content : View, Content : Codable {
         self.init(alignment: root.alignment, spacing: root.spacing) { content }
     }
     public func encode(to encoder: Encoder) throws {
-        let tree = Mirror.single(reflecting: self, named: "_tree").value as! _VariadicView.Tree<_HStackLayout, Content>
+        let tree = Mirror(reflecting: self).descendant("_tree") as! _VariadicView.Tree<_HStackLayout, Content>
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(tree.root, forKey: .root)
         try container.encode(tree.content, forKey: .content)

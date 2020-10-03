@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Text: JsonView {
-    var anyView: AnyView { AnyView(self) }
+    public var anyView: AnyView { AnyView(self) }
 }
 
 extension Text: Codable {

@@ -8,6 +8,30 @@
 // https://github.com/Cosmo/OpenSwiftUI
 import SwiftUI
 
+public protocol JsonView {
+    var anyView: AnyView { get }
+}
+
+extension AnyView: DynaCodable {
+    internal class AnyViewStorageBase {
+        let view: Any
+        init(_ s: Any) {
+            view = Mirror(reflecting: s).descendant("view")!
+        }
+    }
+    public init(from decoder: Decoder, for dynaType: DynaType) throws {
+        guard let value = try decoder.decodeDynaSuper(for: dynaType) as? JsonView else { fatalError("decodeAnyView") }
+        self = value.anyView
+    }
+    public func encode(to encoder: Encoder) throws {
+        let single = Mirror(reflecting: self).descendant("storage")!
+        let storage = AnyViewStorageBase(single)
+        guard let value = storage.view as? Encodable else { fatalError("encodeAnyView") }
+        try encoder.encodeDynaSuper(for: value)
+        try value.encode(to: encoder)
+    }
+}
+
 public struct JsonUI: Codable {
     public let body: Any?
     public var anyView: AnyView? {
@@ -26,9 +50,7 @@ public struct JsonUI: Codable {
     }
 
     static func encode(view: Any) throws -> Data? {
-        guard let value = view as? Encodable else {
-            return nil
-        }
+        guard let value = view as? Encodable else { return nil }
         let root = JsonUI(to: value)
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
@@ -36,45 +58,24 @@ public struct JsonUI: Codable {
     }
     
     // Mark - AnyView
-    static func decodeAnyView(from decoder: Decoder) throws -> AnyView {
-        return AnyView(Text("HERE"))
-//        print(decoder.codingPath.debugDescription)
-//
-//        let typeName = try TypeManager.decodeSuperName(from: decoder)
-//        let parts = typeName.components(separatedBy: "<")
-//        if parts.count != 1 {
-//            fatalError()
-//        }
-//
-//        var body: Any
-//        switch parts[0] {
-//        case "TupleView": body = try TypeManager.decodeSuper(from: decoder, for: TupleView<AnyObject>.self)
-//        default: fatalError()
-//        }
-//
-//        guard let obj = body as? JsonView else { fatalError() }
-//        return obj.anyView
-    }
-    
-    static func encodeAnyView(to encoder: Encoder, for view: Any) throws {
-        guard let view = view as? Encodable else {
-            print("encode:anyView")
-            return
-        }
-        try TypeManager.encodeSuper(to: encoder, for: view)
-        try view.encode(to: encoder)
-    }
-    
+//    static func decodeAnyView(from decoder: Decoder, for dynaType: DynaType) throws -> AnyView {
+//        guard let value = try decoder.decodeDynaSuper(for: dynaType) as? JsonView else { fatalError("decodeAnyView") }
+//        return value.anyView
+//    }
+//    
+//    static func encodeAnyView(to encoder: Encoder, for view: Any) throws {
+//        guard let value = view as? Encodable else { fatalError("encodeAnyView") }
+//        try encoder.encodeDynaSuper(for: value)
+//        try value.encode(to: encoder)
+//    }
+//    
     // Mark - Codable
     public init(from decoder: Decoder) throws {
-        body = try TypeManager.decodeSuper(from: decoder)
-        //body = Text("kjlakdsfjsakljf")
+        body = try decoder.decodeDynaSuper()
     }
     public func encode(to encoder: Encoder) throws {
-        guard let value = body as? Encodable else {
-            fatalError()
-        }
-        try TypeManager.encodeSuper(to: encoder, for: value)
+        guard let value = body as? Encodable else { fatalError("encode") }
+        try encoder.encodeDynaSuper(for: value)
         try value.encode(to: encoder)
     }
     
@@ -82,7 +83,7 @@ public struct JsonUI: Codable {
     public static let registered: Bool = registerDefault()
     
     public static func register<T>(_ type: T.Type) {
-        TypeManager.knownType(type)
+        DynaType.knownType(type)
     }
     
     public static func registerDefault() -> Bool {

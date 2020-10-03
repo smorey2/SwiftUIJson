@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Toggle: JsonView {
-    var anyView: AnyView { AnyView(self) }
+    public var anyView: AnyView { AnyView(self) }
 }
 
 extension Toggle: Encodable where Label : View {

@@ -1,64 +1,51 @@
 //
-//  TypeManager.swift
+//  DataType.swift
 //  Glyph
 //
 //  Created by Sky Morey on 8/22/20.
 //  Copyright © 2020 Sky Morey. All rights reserved.
 //
 
-import SwiftUI
+import Foundation
 
 // https://www.raywenderlich.com/7181017-unsafe-swift-using-pointers-and-interacting-with-c
 
-class TypeManager {
-    enum CodingKeys: CodingKey {
-        case type, inversion1, inversion2
+extension AnyHashable: DynaCodable {
+    public init(from decoder: Decoder, for dynaType: DynaType) throws {
+        guard let value = try decoder.decodeDynaSuper(for: dynaType) as? AnyHashable else { fatalError("decodeAnyView") }
+        self = value
     }
-    
-    enum TypeManagerError: Error {
-        case moduleNotFound
-        case typeNotFound
-        case typeParseError
-        case typeNameError(actual: String, expected: String)
-        case typeNotCodable(named: String)
+    public func encode(to encoder: Encoder) throws {
+//        let single = Mirror(reflecting: self).descendant("storage")!
+//        let storage = AnyViewStorageBase(single)
+//        guard let value = storage.view as? Encodable else { fatalError("encodeAnyView") }
+//        try encoder.encodeDynaSuper(for: value)
+//        try value.encode(to: encoder)
+        fatalError("AnyHashable")
     }
-    
-    // MARK - Super
+}
 
-    public static func encodeSuper(to encoder: Encoder, for obj: Any) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(typeName(for: obj), forKey: .type)
-    }
+enum DynaTypeError: Error {
+    case moduleNotFound
+    case typeNotFound
+    case typeParseError
+    case typeNameError(actual: String, expected: String)
+    case typeNotCodable(named: String)
+}
 
-    public static func decodeSuper(from decoder: Decoder) throws -> Any {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let typeName = try container.decode(String.self, forKey: .type)
-        guard let decodableType = try typeParse(named: typeName) as? Decodable.Type else {
-            throw TypeManagerError.typeNotCodable(named: typeName)
-        }
-        return try decodableType.init(from: decoder)
-    }
-    
-    public static func decodeSuper(from decoder: Decoder, for type: Any.Type) throws -> Any {
-        guard let decodableType = type as? Decodable.Type else {
-            throw TypeManagerError.typeNotCodable(named: typeName(for: type))
-        }
-        return try decodableType.init(from: decoder)
-    }
-
-    public static func decodeSuperName(from decoder: Decoder) throws -> String {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        return try container.decode(String.self, forKey: .type)
-    }
+public enum DynaType {
+    case type(_ type: Any.Type, _ name: String)
+    case tuple(_ type: Any.Type, _ name: String, _ components: [DynaType])
+    case generic(_ type: Any.Type, _ name: String, _ components: [DynaType])
     
     // MARK - Known Type
     
-    static var knownTypes = [String:Any.Type]()
+    static var knownTypes = [String:DynaType]()
     static var knownGenerics = [String:Any.Type]()
     
     public static func knownType<T>(_ type: T.Type) {
         let name = String(reflecting: type)
-        knownTypes[name] = type
+        knownTypes[name] = .type(type, name)
         let parts = name.components(separatedBy: "<")
         if parts.count > 1 {
             knownGenerics[parts[0]] = type
@@ -68,17 +55,17 @@ class TypeManager {
     // MARK - Type Parse
     
     public static func typeName(for obj: Any) -> String! {
-        String(reflecting: type(of: obj).self).replacingOccurrences(of: " ", with: "")
+        String(reflecting: Swift.type(of: obj).self).replacingOccurrences(of: " ", with: "")
     }
     
-    public static func typeParse(named name: String) throws -> Any.Type {
+    public static func typeParse(named name: String) throws -> DynaType {
         if let knownType = knownTypes[name] { return knownType }
-        guard name.components(separatedBy: ".").count > 1 else { throw TypeManagerError.moduleNotFound }
+        guard name.components(separatedBy: ".").count > 1 else { throw DynaTypeError.moduleNotFound }
         let tokens = typeParse(tokens: name)
-        var knownType: Any.Type = String.self
-        var knownName = ""
+        var knownType: DynaType = .type(Never.self, "Never")
+        var knownName: String = ""
         var nameArray = [String]()
-        var typeArray = [Any.Type]()
+        var typeArray = [DynaType]()
         var stack = [(op: String, value: Any, knownName: String)]()
         for token in tokens {
             if token.op == ")" || token.op == ">" {
@@ -90,7 +77,7 @@ class TypeManager {
                     switch last.op {
                     case ",": nameArray.insert(knownName, at: 0); nameArray.insert(last.op, at: 0); typeArray.insert(knownType, at: 0)
                     case "n": knownName = last.value as! String; knownType = try typeParse(knownName: knownName)
-                    case "t": knownName = last.knownName; knownType = last.value as! Any.Type
+                    case "t": knownName = last.knownName; knownType = last.value as! DynaType
                     case "(":
                         nameArray.insert(knownName, at: 0); nameArray.insert(last.op, at: 0); typeArray.insert(knownType, at: 0)
                         knownName = nameArray.joined()
@@ -99,7 +86,7 @@ class TypeManager {
                         let generic = stack.removeLast(), genericName = generic.value as! String
                         nameArray.insert(knownName, at: 0); nameArray.insert(last.op, at: 0); nameArray.insert(genericName, at: 0); typeArray.insert(knownType, at: 0)
                         knownName = nameArray.joined()
-                        stack.append(("t", try typeParse(knownName: knownName, genericName: genericName, types: typeArray), knownName))
+                        stack.append(("t", try typeParse(knownName: knownName, genericName: genericName, generic: typeArray), knownName))
                     default: fatalError()
                     }
                 } while last.op != lastOp
@@ -107,12 +94,12 @@ class TypeManager {
             else { stack.append((token.op, token.value, "")) }
         }
         guard stack.count == 1, let first = stack.first, first.op == "t" else {
-            throw TypeManagerError.typeParseError
+            throw DynaTypeError.typeParseError
         }
         guard name == knownName else {
-            throw TypeManagerError.typeNameError(actual: name, expected: knownName)
+            throw DynaTypeError.typeNameError(actual: name, expected: knownName)
         }
-        knownType = first.value as! Any.Type
+        knownType = first.value as! DynaType
         knownTypes[name] = knownType
         return knownType
     }
@@ -135,12 +122,12 @@ class TypeManager {
         return tokens
     }
     
-    static func typeParse(knownName: String) throws -> Any.Type {
+    static func typeParse(knownName: String) throws -> DynaType {
         if let knownType = knownTypes[knownName] { return knownType }
-        throw TypeManagerError.typeNotFound
+        throw DynaTypeError.typeNotFound
     }
     
-    static func typeParse(knownName: String, tuple: [Any.Type]) throws -> Any.Type {
+    static func typeParse(knownName: String, tuple: [DynaType]) throws -> DynaType {
         if let knownType = knownTypes[knownName] { return knownType }
         var type: Any.Type
         switch tuple.count {
@@ -156,14 +143,14 @@ class TypeManager {
         case 10: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
         default: fatalError()
         }
-        knownTypes[knownName] = type
+        knownTypes[knownName] = .tuple(type, knownName, tuple)
         return knownTypes[knownName]!
     }
 
-    static func typeParse(knownName: String, genericName: String, types: [Any.Type]) throws -> Any.Type {
+    static func typeParse(knownName: String, genericName: String, generic: [DynaType]) throws -> DynaType {
         if let knownType = knownTypes[knownName] { return knownType }
-        guard let type = knownGenerics[genericName] else { throw TypeManagerError.typeNotFound }
-        knownTypes[knownName] = type
+        guard let type = knownGenerics[genericName] else { throw DynaTypeError.typeNotFound }
+        knownTypes[knownName] = .generic(type, knownName, generic)
         return knownTypes[knownName]!
     }
     

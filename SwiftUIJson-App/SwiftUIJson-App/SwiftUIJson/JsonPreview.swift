@@ -33,10 +33,19 @@ public struct JsonPreview<Content>: View where Content: View {
         do {
             let jsonUI = try JsonUI(from: data)
             content2 = jsonUI.anyView ?? AnyView(Text(""))
-        }
-        catch {
-            content2 = AnyView(Text("Error"))
-            data = error.localizedDescription.data(using: .utf8)! + "\n".data(using: .utf8)! + data
+        } catch DynaTypeError.moduleNotFound {
+            content2 = AnyView(Text("moduleNotFound"))
+        } catch DynaTypeError.typeNotFound {
+            content2 = AnyView(Text("typeNotFound"))
+        } catch DynaTypeError.typeParseError {
+            content2 = AnyView(Text("typeParseError"))
+        } catch DynaTypeError.typeNameError(let actual, let expected) {
+            content2 = AnyView(Text("typeNameError actual:\(actual) expected:\(expected)"))
+        } catch DynaTypeError.typeNotCodable(let named) {
+            content2 = AnyView(Text("typeNotCodable named:\(named)"))
+        } catch {
+            content2 = AnyView(Text("error:\(error.localizedDescription)"))
+            //data = error.localizedDescription.data(using: .utf8)! + "\n".data(using: .utf8)! + data
         }
     }
             

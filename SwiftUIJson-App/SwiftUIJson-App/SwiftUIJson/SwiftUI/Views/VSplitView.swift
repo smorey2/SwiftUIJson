@@ -12,7 +12,7 @@ import SwiftUI
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
 extension VSplitView: JsonView {
-    var anyView: AnyView { AnyView(self) }
+    public var anyView: AnyView { AnyView(self) }
 }
 
 @available(OSX 10.15, *)

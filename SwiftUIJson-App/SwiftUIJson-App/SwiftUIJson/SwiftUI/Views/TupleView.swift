@@ -8,13 +8,13 @@
 import SwiftUI
 
 //extension TupleView: JsonView {}
-extension TupleView: Codable {
-    public init(from decoder: Decoder) throws {
+extension TupleView: DynaCodable {
+    public init(from decoder: Decoder, for dynaType: DynaType) throws {
         var container = try decoder.unkeyedContainer()
         var items = [Any]()
         while !container.isAtEnd {
             let baseDecoder = try container.superDecoder()
-            let item = try TypeManager.decodeSuper(from: baseDecoder)
+            let item = try baseDecoder.decodeDynaSuper()
             items.append(item)
         }
         let t = items.withUnsafeBytes {
@@ -29,7 +29,7 @@ extension TupleView: Codable {
                 continue
             }
             let baseEncoder = container.superEncoder()
-            try TypeManager.encodeSuper(to: baseEncoder, for: value)
+            try baseEncoder.encodeDynaSuper(for: value)
             try value.encode(to: baseEncoder)
         }
     }
