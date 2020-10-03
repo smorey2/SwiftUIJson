@@ -21,18 +21,20 @@ public struct JsonPreview<Content>: View where Content: View {
     
     public init(@ViewBuilder content: () -> Content) {
         self.content = content()
+        
         // data
         do {
-            let missing = "\(type(of: self.content).self) Not Codeable".data(using: .utf8)!
-            data = try JsonUI.encode(view: self.content.body) ?? missing
+            //let missing = "\(type(of: self.content).self) Not Codeable".data(using: .utf8)!
+            data = try JsonUI.encode(view: self.content.body)
         }
         catch {
             data = error.localizedDescription.data(using: .utf8)!
         }
+        
         // content2
         do {
             let jsonUI = try JsonUI(from: data)
-            content2 = jsonUI.anyView ?? AnyView(Text(""))
+            content2 = jsonUI.anyView ?? AnyView(Text("Missing"))
         } catch DynaTypeError.moduleNotFound {
             content2 = AnyView(Text("moduleNotFound"))
         } catch DynaTypeError.typeNotFound {

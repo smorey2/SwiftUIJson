@@ -12,6 +12,14 @@ public protocol JsonView {
     var anyView: AnyView { get }
 }
 
+extension View {
+    func dump() -> some View {
+        let data = try! JsonUI.encode(view: self.body)
+        print(String(data: data, encoding: .utf8)!)
+        return self
+    }
+}
+
 extension AnyView: DynaCodable {
     internal class AnyViewStorageBase {
         let view: Any
@@ -20,7 +28,7 @@ extension AnyView: DynaCodable {
         }
     }
     public init(from decoder: Decoder, for dynaType: DynaType) throws {
-        guard let value = try decoder.decodeDynaSuper(for: dynaType) as? JsonView else { fatalError("decodeAnyView") }
+        guard let value = try decoder.decodeDynaSuper(for: dynaType, index: 0) as? JsonView else { fatalError("decodeAnyView") }
         self = value.anyView
     }
     public func encode(to encoder: Encoder) throws {
@@ -33,11 +41,8 @@ extension AnyView: DynaCodable {
 }
 
 public struct JsonUI: Codable {
-    public let body: Any?
-    public var anyView: AnyView? {
-        guard let obj = body as? JsonView else { return nil }
-        return obj.anyView
-    }
+    public let body: Any
+    public var anyView: AnyView? { body as? AnyView }
     
     public init(from json: Data) throws {
         let _ = JsonUI.registered
@@ -49,29 +54,23 @@ public struct JsonUI: Codable {
         body = encoder
     }
 
-    static func encode(view: Any) throws -> Data? {
-        guard let value = view as? Encodable else { return nil }
+    static func encode(view: Any) throws -> Data {
+        guard let value = view as? Encodable else { fatalError() }
         let root = JsonUI(to: value)
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         return try encoder.encode(root)
     }
     
-    // Mark - AnyView
-//    static func decodeAnyView(from decoder: Decoder, for dynaType: DynaType) throws -> AnyView {
-//        guard let value = try decoder.decodeDynaSuper(for: dynaType) as? JsonView else { fatalError("decodeAnyView") }
-//        return value.anyView
-//    }
-//    
-//    static func encodeAnyView(to encoder: Encoder, for view: Any) throws {
-//        guard let value = view as? Encodable else { fatalError("encodeAnyView") }
-//        try encoder.encodeDynaSuper(for: value)
-//        try value.encode(to: encoder)
-//    }
-//    
     // Mark - Codable
     public init(from decoder: Decoder) throws {
-        body = try decoder.decodeDynaSuper()
+        let value = try decoder.decodeDynaSuper()
+        guard let anyView = value as? AnyView else {
+            guard let view = value as? JsonView else { fatalError("init") }
+            body = view.anyView
+            return
+        }
+        body = anyView
     }
     public func encode(to encoder: Encoder) throws {
         guard let value = body as? Encodable else { fatalError("encode") }
@@ -176,16 +175,5 @@ public struct JsonUI: Codable {
     @available(watchOS, unavailable)
     static func registerDefault_OSX_iOS_tvOS() {
         register(TabView<AnyHashable, AnyView>.self)
-    }
-}
-
-extension View {
-    func dump() -> some View {
-        guard let data = try! JsonUI.encode(view: self.body) else {
-            print("Unable to encode view")
-            return self
-        }
-        print(String(data: data, encoding: .utf8)!)
-        return self
     }
 }

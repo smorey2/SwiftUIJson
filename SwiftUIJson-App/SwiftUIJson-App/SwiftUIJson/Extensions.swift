@@ -44,9 +44,7 @@ extension Mirror {
     }
     static func single(reflecting: Any, named: String? = nil) -> Mirror.Child {
         let children = Mirror(reflecting: reflecting).children
-        guard children.count == 1, let first = children.first, named == nil || first.label == named else {
-            fatalError("single")
-        }
+        guard children.count == 1, let first = children.first, named == nil || first.label == named else { fatalError("single") }
         return first
     }
 }

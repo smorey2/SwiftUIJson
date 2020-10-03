@@ -12,7 +12,7 @@ import Foundation
 
 extension AnyHashable: DynaCodable {
     public init(from decoder: Decoder, for dynaType: DynaType) throws {
-        guard let value = try decoder.decodeDynaSuper(for: dynaType) as? AnyHashable else { fatalError("decodeAnyView") }
+        guard let value = try decoder.decodeDynaSuper(for: dynaType, index: 0) as? AnyHashable else { fatalError("decodeAnyView") }
         self = value
     }
     public func encode(to encoder: Encoder) throws {
@@ -37,6 +37,28 @@ public enum DynaType {
     case type(_ type: Any.Type, _ name: String)
     case tuple(_ type: Any.Type, _ name: String, _ components: [DynaType])
     case generic(_ type: Any.Type, _ name: String, _ components: [DynaType])
+    
+    public subscript(index: Int) -> DynaType {
+        guard index > -1 else { return self }
+        switch self {
+        case .tuple(_, _, let componets), .generic(_, _, let componets): return componets[index]
+        default: return self
+        }
+    }
+    
+    // MARK - Convert
+    
+//    public func bind<T, Element>(to type: T.Type, for source: [Element]) -> T {
+//        let abc = T.self
+//        switch self {
+//        case .type:
+//            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
+//        case .tuple(let type, _, let componets):
+//            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
+//        case .generic(let type, _, let componets):
+//            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
+//        }
+//    }
     
     // MARK - Known Type
     
@@ -146,7 +168,23 @@ public enum DynaType {
         knownTypes[knownName] = .tuple(type, knownName, tuple)
         return knownTypes[knownName]!
     }
-
+    
+    static func typeBuild<Element>(_ dataType: DynaType, for s: [Element]) -> AnyObject {
+        switch s.count {
+        case 1: return (s[0] as! JsonView) as AnyObject
+        case 2: return (s[0] as! JsonView, s[1] as! JsonView) as AnyObject
+        case 3: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView) as AnyObject
+        case 4: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView) as AnyObject
+        case 5: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView) as AnyObject
+        case 6: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView, s[5] as! JsonView) as AnyObject
+        case 7: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView, s[5] as! JsonView, s[6] as! JsonView) as AnyObject
+        case 8: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView, s[5] as! JsonView, s[6] as! JsonView, s[7] as! JsonView) as AnyObject
+        case 9: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView, s[5] as! JsonView, s[6] as! JsonView, s[7] as! JsonView, s[8] as! JsonView) as AnyObject
+        case 10: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView, s[5] as! JsonView, s[6] as! JsonView, s[7] as! JsonView, s[8] as! JsonView, s[9] as! JsonView) as AnyObject
+        default: fatalError()
+        }
+    }
+    
     static func typeParse(knownName: String, genericName: String, generic: [DynaType]) throws -> DynaType {
         if let knownType = knownTypes[knownName] { return knownType }
         guard let type = knownGenerics[genericName] else { throw DynaTypeError.typeNotFound }

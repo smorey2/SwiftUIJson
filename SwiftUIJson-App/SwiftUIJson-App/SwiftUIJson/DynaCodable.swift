@@ -27,17 +27,13 @@ extension Decoder {
         return try decodeDynaSuper(for: dynaType)
     }
     
-    public func decodeDynaSuper(for dynaType: DynaType) throws -> Any {
-        switch dynaType {
+    public func decodeDynaSuper(for dynaType: DynaType, index: Int = -1) throws -> Any {
+        switch dynaType[index] {
         case .type(let type, let name):
-            guard let decodableType = type as? Decodable.Type else {
-                throw DynaTypeError.typeNotCodable(named: name)
-            }
+            guard let decodableType = type as? Decodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
             return try decodableType.init(from: self)
         case .tuple(let type, let name, _), .generic(let type, let name, _):
-            guard let decodableType = type as? DynaDecodable.Type else {
-                throw DynaTypeError.typeNotCodable(named: name)
-            }
+            guard let decodableType = type as? DynaDecodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
             return try decodableType.init(from: self, for: dynaType)
         }
     }

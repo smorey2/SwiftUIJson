@@ -7,27 +7,26 @@
 
 import SwiftUI
 
-//extension TupleView: JsonView {}
+extension TupleView: JsonView {
+    public var anyView: AnyView { AnyView(self) }
+}
+
 extension TupleView: DynaCodable {
     public init(from decoder: Decoder, for dynaType: DynaType) throws {
         var container = try decoder.unkeyedContainer()
-        var items = [Any]()
+        var items = [JsonView]()
         while !container.isAtEnd {
             let baseDecoder = try container.superDecoder()
-            let item = try baseDecoder.decodeDynaSuper()
+            let item = try baseDecoder.decodeDynaSuper() as! JsonView
             items.append(item)
         }
-        let t = items.withUnsafeBytes {
-             $0.bindMemory(to: T.self)[0]
-        }
-        self.init(t)
+        let value = DynaType.typeBuild(dynaType[0], for: items) as! T
+        self.init(value)
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.unkeyedContainer()
         for value in Mirror.values(reflecting: value) {
-            guard let value = value as? Encodable else {
-                continue
-            }
+            guard let value = value as? Encodable else { continue }
             let baseEncoder = container.superEncoder()
             try baseEncoder.encodeDynaSuper(for: value)
             try value.encode(to: baseEncoder)
