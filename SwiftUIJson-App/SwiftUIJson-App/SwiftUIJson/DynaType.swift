@@ -8,19 +8,12 @@
 
 import Foundation
 
-// https://www.raywenderlich.com/7181017-unsafe-swift-using-pointers-and-interacting-with-c
-
 extension AnyHashable: DynaCodable {
     public init(from decoder: Decoder, for dynaType: DynaType) throws {
-        guard let value = try decoder.decodeDynaSuper(for: dynaType, index: 0) as? AnyHashable else { fatalError("decodeAnyView") }
+        guard let value = try decoder.decodeDynaSuper(for: dynaType, index: 0) as? AnyHashable else { fatalError("AnyHashable") }
         self = value
     }
     public func encode(to encoder: Encoder) throws {
-//        let single = Mirror(reflecting: self).descendant("storage")!
-//        let storage = AnyViewStorageBase(single)
-//        guard let value = storage.view as? Encodable else { fatalError("encodeAnyView") }
-//        try encoder.encodeDynaSuper(for: value)
-//        try value.encode(to: encoder)
         fatalError("AnyHashable")
     }
 }
@@ -45,32 +38,22 @@ public enum DynaType {
         default: return self
         }
     }
-    
-    // MARK - Convert
-    
-//    public func bind<T, Element>(to type: T.Type, for source: [Element]) -> T {
-//        let abc = T.self
-//        switch self {
-//        case .type:
-//            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
-//        case .tuple(let type, _, let componets):
-//            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
-//        case .generic(let type, _, let componets):
-//            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
-//        }
-//    }
-    
+
     // MARK - Known Type
     
     static var knownTypes = [String:DynaType]()
     static var knownGenerics = [String:Any.Type]()
     
     public static func knownType<T>(_ type: T.Type) {
-        let name = String(reflecting: type)
-        knownTypes[name] = .type(type, name)
-        let parts = name.components(separatedBy: "<")
+        let knownName = String(reflecting: type)
+        knownTypes[knownName] = .type(type, knownName)
+        let parts = knownName.components(separatedBy: "<")
         if parts.count > 1 {
             knownGenerics[parts[0]] = type
+            if knownName.contains("(") {
+                let commas = knownName.components(separatedBy: ",").count
+                knownGenerics["\(parts[0]):\(commas)"] = type
+            }
         }
     }
     
@@ -153,15 +136,15 @@ public enum DynaType {
         if let knownType = knownTypes[knownName] { return knownType }
         var type: Any.Type
         switch tuple.count {
-        case 1: type = (JsonView).Type.self
-        case 2: type = (JsonView, JsonView).Type.self
-        case 3: type = (JsonView, JsonView, JsonView).Type.self
-        case 4: type = (JsonView, JsonView, JsonView, JsonView).Type.self
-        case 5: type = (JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
-        case 6: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
-        case 7: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
-        case 8: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
-        case 9: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
+        case 01: type = (JsonView).Type.self
+        case 02: type = (JsonView, JsonView).Type.self
+        case 03: type = (JsonView, JsonView, JsonView).Type.self
+        case 04: type = (JsonView, JsonView, JsonView, JsonView).Type.self
+        case 05: type = (JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
+        case 06: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
+        case 07: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
+        case 08: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
+        case 09: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
         case 10: type = (JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView, JsonView).Type.self
         default: fatalError()
         }
@@ -169,28 +152,47 @@ public enum DynaType {
         return knownTypes[knownName]!
     }
     
-    static func typeBuild<Element>(_ dataType: DynaType, for s: [Element]) -> AnyObject {
+    static func typeBuild<Element>(_ dataType: DynaType, for s: [Element]) -> Any {
         switch s.count {
-        case 1: return (s[0] as! JsonView) as AnyObject
-        case 2: return (s[0] as! JsonView, s[1] as! JsonView) as AnyObject
-        case 3: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView) as AnyObject
-        case 4: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView) as AnyObject
-        case 5: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView) as AnyObject
-        case 6: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView, s[5] as! JsonView) as AnyObject
-        case 7: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView, s[5] as! JsonView, s[6] as! JsonView) as AnyObject
-        case 8: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView, s[5] as! JsonView, s[6] as! JsonView, s[7] as! JsonView) as AnyObject
-        case 9: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView, s[5] as! JsonView, s[6] as! JsonView, s[7] as! JsonView, s[8] as! JsonView) as AnyObject
-        case 10: return (s[0] as! JsonView, s[1] as! JsonView, s[2] as! JsonView, s[3] as! JsonView, s[4] as! JsonView, s[5] as! JsonView, s[6] as! JsonView, s[7] as! JsonView, s[8] as! JsonView, s[9] as! JsonView) as AnyObject
+        case 01: return (JsonAnyView(s[0] as! JsonView))
+        case 02: return (JsonAnyView(s[0] as! JsonView), JsonAnyView(s[1] as! JsonView))
+        case 03: return (JsonAnyView(s[0] as! JsonView), JsonAnyView(s[1] as! JsonView), JsonAnyView(s[2] as! JsonView))
+        case 04: return (JsonAnyView(s[0] as! JsonView), JsonAnyView(s[1] as! JsonView), JsonAnyView(s[2] as! JsonView), JsonAnyView(s[3] as! JsonView))
+        case 05: return (JsonAnyView(s[0] as! JsonView), JsonAnyView(s[1] as! JsonView), JsonAnyView(s[2] as! JsonView), JsonAnyView(s[3] as! JsonView), JsonAnyView(s[4] as! JsonView))
+        case 06: return (JsonAnyView(s[0] as! JsonView), JsonAnyView(s[1] as! JsonView), JsonAnyView(s[2] as! JsonView), JsonAnyView(s[3] as! JsonView), JsonAnyView(s[4] as! JsonView),
+                        JsonAnyView(s[5] as! JsonView))
+        case 07: return (JsonAnyView(s[0] as! JsonView), JsonAnyView(s[1] as! JsonView), JsonAnyView(s[2] as! JsonView), JsonAnyView(s[3] as! JsonView), JsonAnyView(s[4] as! JsonView),
+                        JsonAnyView(s[5] as! JsonView), JsonAnyView(s[6] as! JsonView))
+        case 08: return (JsonAnyView(s[0] as! JsonView), JsonAnyView(s[1] as! JsonView), JsonAnyView(s[2] as! JsonView), JsonAnyView(s[3] as! JsonView), JsonAnyView(s[4] as! JsonView),
+                        JsonAnyView(s[5] as! JsonView), JsonAnyView(s[6] as! JsonView), JsonAnyView(s[7] as! JsonView))
+        case 09: return (JsonAnyView(s[0] as! JsonView), JsonAnyView(s[1] as! JsonView), JsonAnyView(s[2] as! JsonView), JsonAnyView(s[3] as! JsonView), JsonAnyView(s[4] as! JsonView),
+                        JsonAnyView(s[5] as! JsonView), JsonAnyView(s[6] as! JsonView), JsonAnyView(s[7] as! JsonView), JsonAnyView(s[8] as! JsonView))
+        case 10: return (JsonAnyView(s[0] as! JsonView), JsonAnyView(s[1] as! JsonView), JsonAnyView(s[2] as! JsonView), JsonAnyView(s[3] as! JsonView), JsonAnyView(s[4] as! JsonView),
+                         JsonAnyView(s[5] as! JsonView), JsonAnyView(s[6] as! JsonView), JsonAnyView(s[7] as! JsonView), JsonAnyView(s[8] as! JsonView), JsonAnyView(s[9] as! JsonView))
         default: fatalError()
         }
     }
     
     static func typeParse(knownName: String, genericName: String, generic: [DynaType]) throws -> DynaType {
         if let knownType = knownTypes[knownName] { return knownType }
-        guard let type = knownGenerics[genericName] else { throw DynaTypeError.typeNotFound }
+        let commas = knownName.components(separatedBy: ",").count
+        guard let type = knownGenerics["\(genericName):\(commas)"] ?? knownGenerics[genericName] else { throw DynaTypeError.typeNotFound }
         knownTypes[knownName] = .generic(type, knownName, generic)
         return knownTypes[knownName]!
     }
+    
+    //    public func typeBind<T, Element>(to type: T.Type, for source: [Element]) -> T {
+    //        let abc = T.self
+    //        switch self {
+    //        case .type:
+    //            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
+    //        case .tuple(let type, _, let componets):
+    //            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
+    //        case .generic(let type, _, let componets):
+    //            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
+    //        }
+    //    }
+        
     
     //    static func typeTuple<T1, T2>(_ t1: T1.Type, _ t2: T2.Type) -> Any.Type { type(of: (defaultValue(t1), defaultValue(t2))).self }
     //    static func typeTuple<T1, T2, T3>(_ t1: T1.Type, _ t2: T2.Type, _ t3: T3.Type) -> Any.Type { type(of: (defaultValue(t1), defaultValue(t2), defaultValue(t3))).self }

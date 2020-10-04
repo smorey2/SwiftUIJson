@@ -48,13 +48,27 @@ extension Text: Codable {
             default: fatalError(mirror.label!)
             }
         }
+        // MARK - Apply
+        func apply(_ text: Text) -> Text {
+            switch self {
+            case .color(let value): return text.foregroundColor(value)
+            case .font(let value): return text.font(value)
+            case .italic: return text.italic()
+            case .weight(let value): return text.fontWeight(value)
+            case .kerning(let value): return text.kerning(value)
+            case .tracking(let value): return text.tracking(value)
+            case .baseline(let value): return text.baselineOffset(value)
+//            case .rounded: return text
+//            case .anyTextModifier(let value): return text
+            default: fatalError("\(self)")
+            }
+        }
         // MARK - Codable
         enum CodingKeys: CodingKey {
             case color, font, italic, weight, kerning, tracking, baseline, rounded, anyTextModifier
         }
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            
             if container.contains(.color) { self = .color(try container.decodeOptional(Color.self, forKey: .color)) }
             else if container.contains(.font) { self = .font(try container.decodeOptional(Font.self, forKey: .font)) }
             else if container.contains(.italic) { self = .italic }
@@ -64,10 +78,7 @@ extension Text: Codable {
             else if container.contains(.baseline) { self = .baseline(try container.decode(CoreGraphics.CGFloat.self, forKey: .baseline)) }
             else if container.contains(.rounded) { self = .rounded }
             else if container.contains(.anyTextModifier) { self = .anyTextModifier(try container.decode(AnyTextModifier.self, forKey: .anyTextModifier)) }
-            else {
-                let context = DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Invalid Text!")
-                throw DecodingError.dataCorrupted(context)
-            }
+            else { throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Invalid Text!")) }
         }
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
@@ -103,15 +114,14 @@ extension Text: Codable {
             key = LocalizedStringKey(try container.decode(String.self, forKey: .text))
             table = try container.decodeIfPresent(String.self, forKey: .table)
             bundle = container.contains(.bundle) ? Bundle() : nil
-            //        bundle = container.contains(.bundle) ? Bundle.encode(<#T##self: Bundle##Bundle#>) : nil
+            //bundle = container.contains(.bundle) ? Bundle.encode() : nil
         }
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(key.encodeValue, forKey: .text)
             try container.encodeIfPresent(table, forKey: .table)
             try container.encodeIfPresent(bundle, forKey: .bundle)
-            //            let context = EncodingError.Context(codingPath: encoder.codingPath, debugDescription: "Invalid employee!")
-            //            throw EncodingError.invalidValue(self, context)
+            //throw EncodingError.invalidValue(self, EncodingError.Context(codingPath: encoder.codingPath, debugDescription: "Invalid employee!"))
         }
     }
     
@@ -143,11 +153,12 @@ extension Text: Codable {
             let anyText = try container.decode(AnyTextStorage.self, forKey: .anyText)
             self = Text(anyText.key, tableName: anyText.table, bundle: anyText.bundle, comment: nil)
         }
-        else {
-            let context = DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Invalid Text!")
-            throw DecodingError.dataCorrupted(context)
-        }
+        else { throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Invalid Text!")) }
         // modifiers
+        guard let modifiers = try container.decodeIfPresent([Modifier].self, forKey: .modifiers) else { return }
+        for modifier in modifiers {
+            self = modifier.apply(self)
+        }
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -157,11 +168,8 @@ extension Text: Codable {
         switch storage {
         case .verbatim(let text): try container.encode(text, forKey: .verbatim)
         case .anyTextStorage(let anyText):
-            if anyText.table == nil && anyText.bundle == nil {
-                try container.encode(anyText.key.encodeValue, forKey: .text)
-                break
-            }
-            try container.encode(anyText, forKey: .anyText)
+            if anyText.table == nil && anyText.bundle == nil { try container.encode(anyText.key.encodeValue, forKey: .text) }
+            else { try container.encode(anyText, forKey: .anyText) }
         }
         // modifiers
         let modifiers = mirror.children(named: "modifiers").map { Modifier($0) }

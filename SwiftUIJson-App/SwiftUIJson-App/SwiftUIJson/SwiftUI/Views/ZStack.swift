@@ -12,7 +12,6 @@ extension ZStack: JsonView {
 }
 
 extension ZStack: Codable where Content : View, Content : Codable {
-
     enum CodingKeys: CodingKey {
         case root, content
     }

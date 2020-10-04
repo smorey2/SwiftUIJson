@@ -12,6 +12,11 @@ public protocol JsonView {
     var anyView: AnyView { get }
 }
 
+public struct JsonAnyView: View {
+    public let body: AnyView
+    public init(_ view: JsonView) { body = view.anyView }
+}
+
 extension View {
     func dump() -> some View {
         let data = try! JsonUI.encode(view: self.body)
@@ -28,13 +33,13 @@ extension AnyView: DynaCodable {
         }
     }
     public init(from decoder: Decoder, for dynaType: DynaType) throws {
-        guard let value = try decoder.decodeDynaSuper(for: dynaType, index: 0) as? JsonView else { fatalError("decodeAnyView") }
+        guard let value = try decoder.decodeDynaSuper(for: dynaType, index: 0) as? JsonView else { fatalError("AnyView") }
         self = value.anyView
     }
     public func encode(to encoder: Encoder) throws {
         let single = Mirror(reflecting: self).descendant("storage")!
         let storage = AnyViewStorageBase(single)
-        guard let value = storage.view as? Encodable else { fatalError("encodeAnyView") }
+        guard let value = storage.view as? Encodable else { fatalError("AnyView") }
         try encoder.encodeDynaSuper(for: value)
         try value.encode(to: encoder)
     }
@@ -65,6 +70,7 @@ public struct JsonUI: Codable {
     // Mark - Codable
     public init(from decoder: Decoder) throws {
         let value = try decoder.decodeDynaSuper()
+        print(value)
         guard let anyView = value as? AnyView else {
             guard let view = value as? JsonView else { fatalError("init") }
             body = view.anyView
@@ -110,7 +116,7 @@ public struct JsonUI: Codable {
         register(Divider.self)
         register(EditButton.self)
         register(EmptyView.self)
-//        register(EquatableView<AnyObject>.self)
+//        register(EquatableView<Any>.self)
 //        register(ForEach<AnyRandomAccessCollection, AnyHashable, AnyView>.self)
         register(Form<AnyView>.self)
         register(GeometryReader<AnyView>.self)
@@ -119,7 +125,7 @@ public struct JsonUI: Codable {
         register(HStack<AnyView>.self)
         register(Image.self)
         register(List<AnyHashable, AnyView>.self)
-        register(ModifiedContent<AnyView, AnyObject>.self)
+        register(ModifiedContent<AnyView, Any>.self)
         register(NavigationLink<AnyView, AnyView>.self)
         register(NavigationView<AnyView>.self)
         register(Never.self)
@@ -133,7 +139,16 @@ public struct JsonUI: Codable {
         register(Text.self)
         register(TextField<AnyView>.self)
         register(Toggle<AnyView>.self)
-        register(TupleView<AnyObject>.self)
+        register(TupleView<(JsonAnyView)>.self)
+        register(TupleView<(JsonAnyView, JsonAnyView)>.self)
+        register(TupleView<(JsonAnyView, JsonAnyView, JsonAnyView)>.self)
+        register(TupleView<(JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView)>.self)
+        register(TupleView<(JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView)>.self)
+        register(TupleView<(JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView)>.self)
+        register(TupleView<(JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView)>.self)
+        register(TupleView<(JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView)>.self)
+        register(TupleView<(JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView)>.self)
+        register(TupleView<(JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView, JsonAnyView)>.self)
         register(VStack<AnyView>.self)
         register(ZStack<AnyView>.self)
     }

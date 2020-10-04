@@ -414,8 +414,8 @@
 		54683713250E67D300CE1AF1 /* SwiftUIJson */ = {
 			isa = PBXGroup;
 			children = (
-				540169A825212CC200F51EB4 /* DynaType.swift */,
 				546683C82528DA9A000F82C9 /* DynaCodable.swift */,
+				540169A825212CC200F51EB4 /* DynaType.swift */,
 				5443154F2517E59100BFDD83 /* Extensions.swift */,
 				54C22AF12518E3FD001947C4 /* Foundation */,
 				546538F425166AB2003161DE /* JsonPreview.swift */,
