@@ -124,7 +124,6 @@ extension Text: Codable {
             //throw EncodingError.invalidValue(self, EncodingError.Context(codingPath: encoder.codingPath, debugDescription: "Invalid employee!"))
         }
     }
-    
     internal class AnyTextModifier: Codable {
         init(_ s: Any) {
             fatalError("AnyTextModifier")
