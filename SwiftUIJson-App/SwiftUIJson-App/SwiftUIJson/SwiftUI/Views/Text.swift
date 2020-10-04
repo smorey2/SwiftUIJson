@@ -11,7 +11,7 @@ extension Text: JsonView {
     public var anyView: AnyView { AnyView(self) }
 }
 
-extension Text: Codable {
+extension Text: DynaCodable {
     @frozen internal enum Storage  {
         case verbatim(String)
         case anyTextStorage(AnyTextStorage)
@@ -143,7 +143,7 @@ extension Text: Codable {
     enum CodingKeys: CodingKey {
         case verbatim, text, anyText, modifiers
     }
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder, for dynaType: DynaType) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         // storage
         if container.contains(.verbatim) { self = Text(verbatim: try container.decode(String.self, forKey: .verbatim)) }

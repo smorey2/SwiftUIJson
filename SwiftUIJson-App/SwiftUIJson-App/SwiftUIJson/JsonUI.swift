@@ -28,9 +28,7 @@ extension View {
 extension AnyView: DynaCodable {
     internal class AnyViewStorageBase {
         let view: Any
-        init(_ s: Any) {
-            view = Mirror(reflecting: s).descendant("view")!
-        }
+        init(_ s: Any) { view = Mirror(reflecting: s).descendant("view")! }
     }
     public init(from decoder: Decoder, for dynaType: DynaType) throws {
         guard let value = try decoder.decodeDynaSuper(for: dynaType, index: 0) as? JsonView else { fatalError("AnyView") }
@@ -41,7 +39,6 @@ extension AnyView: DynaCodable {
         let storage = AnyViewStorageBase(single)
         guard let value = storage.view as? Encodable else { fatalError("AnyView") }
         try encoder.encodeDynaSuper(for: value)
-        try value.encode(to: encoder)
     }
 }
 
@@ -61,16 +58,15 @@ public struct JsonUI: Codable {
 
     static func encode(view: Any) throws -> Data {
         guard let value = view as? Encodable else { throw DynaTypeError.typeNotCodable(named: String(reflecting: view)) }
-        let root = JsonUI(to: value)
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
-        return try encoder.encode(root)
+        return try encoder.encode(JsonUI(to: value))
     }
     
     // Mark - Codable
     public init(from decoder: Decoder) throws {
         let value = try decoder.decodeDynaSuper()
-        print(value)
+        //print(value)
         guard let anyView = value as? AnyView else {
             guard let view = value as? JsonView else { fatalError("init") }
             body = view.anyView
@@ -81,7 +77,6 @@ public struct JsonUI: Codable {
     public func encode(to encoder: Encoder) throws {
         guard let value = body as? Encodable else { fatalError("encode") }
         try encoder.encodeDynaSuper(for: value)
-        try value.encode(to: encoder)
     }
     
     // MARK - Register

@@ -29,7 +29,6 @@ extension TupleView: DynaCodable {
             guard let value = value as? Encodable else { continue }
             let baseEncoder = container.superEncoder()
             try baseEncoder.encodeDynaSuper(for: value)
-            try value.encode(to: baseEncoder)
         }
     }
 }

@@ -11,20 +11,20 @@ extension ZStack: JsonView {
     public var anyView: AnyView { AnyView(self) }
 }
 
-extension ZStack: Codable where Content : View, Content : Codable {
+extension ZStack: DynaCodable where Content : View, Content : DynaCodable {
     enum CodingKeys: CodingKey {
         case root, content
     }
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder, for dynaType: DynaType) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let root = try container.decode(_ZStackLayout.self, forKey: .root)
-        let content = try container.decode(Content.self, forKey: .content)
+        let root = try container.decodeIfPresent(_ZStackLayout.self, forKey: .root) ?? _ZStackLayout(alignment: .center)
+        let content = try container.decode(Content.self, forKey: .content, dynaType: dynaType)
         self.init(alignment: root.alignment) { content }
     }
     public func encode(to encoder: Encoder) throws {
         let tree = Mirror(reflecting: self).descendant("_tree") as! _VariadicView.Tree<_ZStackLayout, Content>
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(tree.root, forKey: .root)
+        if tree.root.alignment != .center { try container.encode(tree.root, forKey: .root) }
         try container.encode(tree.content, forKey: .content)
     }
 }

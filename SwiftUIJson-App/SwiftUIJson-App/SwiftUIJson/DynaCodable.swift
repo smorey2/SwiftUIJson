@@ -6,7 +6,6 @@
 //  Copyright © 2020 Sky Morey. All rights reserved.
 //
 
-
 // MARK - Encoder / Decoder
 
 enum CodingKeys: CodingKey {
@@ -14,9 +13,10 @@ enum CodingKeys: CodingKey {
 }
 
 extension Encoder {
-    public func encodeDynaSuper(for obj: Any) throws {
+    public func encodeDynaSuper(for value: Encodable) throws {
         var container = self.container(keyedBy: CodingKeys.self)
-        try container.encode(DynaType.typeName(for: obj), forKey: .type)
+        try container.encode(DynaType.typeName(for: value), forKey: .type)
+        try value.encode(to: self)
     }
 }
 
@@ -30,9 +30,13 @@ extension Decoder {
     public func decodeDynaSuper(for dynaType: DynaType, index: Int = -1) throws -> Any {
         switch dynaType[index] {
         case .type(let type, let name):
-            guard let decodableType = type as? Decodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
-            return try decodableType.init(from: self)
-        case .tuple(let type, let name, _), .generic(let type, let name, _):
+            guard let decodableType = type as? DynaDecodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
+            return try decodableType.init(from: self, for: dynaType)
+//        case .tuple(let type, let name, _), .generic(let type, let name, _):
+        case .tuple(let type, let name, _):
+            guard let decodableType = type as? DynaDecodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
+            return try decodableType.init(from: self, for: dynaType)
+        case .generic(let type, let name, _):
             guard let decodableType = type as? DynaDecodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
             return try decodableType.init(from: self, for: dynaType)
         }
@@ -100,6 +104,5 @@ extension KeyedDecodingContainerProtocol {
         forKey key: Key
     ) throws -> T? {
         fatalError()
-        //      return try _box.decodeIfPresent(T.self, forKey: key)
     }
 }

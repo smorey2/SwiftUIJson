@@ -47,14 +47,10 @@ public enum DynaType {
     public static func knownType<T>(_ type: T.Type) {
         let knownName = String(reflecting: type)
         knownTypes[knownName] = .type(type, knownName)
-        let parts = knownName.components(separatedBy: "<")
-        if parts.count > 1 {
-            knownGenerics[parts[0]] = type
-            if knownName.contains("(") {
-                let commas = knownName.components(separatedBy: ",").count
-                knownGenerics["\(parts[0]):\(commas)"] = type
-            }
-        }
+        let parts = knownName.components(separatedBy: "<"); if parts.count == 1 { return }
+        let genericName = parts[0], genericKey = !knownName.starts(with: "SwiftUI.TupleView<(") ? genericName  : "\(genericName):\(knownName.components(separatedBy: ",").count)"
+        guard knownGenerics[genericKey] == nil else { fatalError("\(genericKey) is already registered") }
+        knownGenerics[genericKey] = type
     }
     
     // MARK - Type Parse
@@ -175,8 +171,12 @@ public enum DynaType {
     
     static func typeParse(knownName: String, genericName: String, generic: [DynaType]) throws -> DynaType {
         if let knownType = knownTypes[knownName] { return knownType }
-        let commas = knownName.components(separatedBy: ",").count
-        guard let type = knownGenerics["\(genericName):\(commas)"] ?? knownGenerics[genericName] else { throw DynaTypeError.typeNotFound }
+        let genericKey: String
+        switch generic[0] {
+        case .tuple(_, _, let componets) where genericName == "SwiftUI.TupleView": genericKey = "\(genericName):\(componets.count)"
+        default: genericKey = genericName
+        }
+        guard let type = knownGenerics[genericKey] else { throw DynaTypeError.typeNotFound }
         knownTypes[knownName] = .generic(type, knownName, generic)
         return knownTypes[knownName]!
     }
@@ -191,24 +191,5 @@ public enum DynaType {
     //        case .generic(let type, _, let componets):
     //            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
     //        }
-    //    }
-        
-    
-    //    static func typeTuple<T1, T2>(_ t1: T1.Type, _ t2: T2.Type) -> Any.Type { type(of: (defaultValue(t1), defaultValue(t2))).self }
-    //    static func typeTuple<T1, T2, T3>(_ t1: T1.Type, _ t2: T2.Type, _ t3: T3.Type) -> Any.Type { type(of: (defaultValue(t1), defaultValue(t2), defaultValue(t3))).self }
-    //    static func defaultValue<T>(_ t: T.Type) -> T {
-    //        let ptr = UnsafeMutablePointer<T>.allocate(capacity: 1)
-    //        let val = ptr.withMemoryRebound(to: T.self, capacity: 1) { $0[0] }
-    //        defer { ptr.deallocate() }
-    //        return val
-    //    }
-    //
-    //    static func defaultValue<T>(_ t: T.Type) -> T {
-    //        let ptr = UnsafeMutableRawPointer.allocate(
-    //            byteCount: MemoryLayout<T>.size,
-    //            alignment: MemoryLayout<T>.alignment)
-    //        let val = ptr.bindMemory(to: T.self, capacity: 1)[0]
-    //        defer { ptr.deallocate() }
-    //        return val
     //    }
 }
