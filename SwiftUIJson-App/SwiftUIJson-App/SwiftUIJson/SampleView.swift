@@ -26,7 +26,7 @@ struct SampleView: View {
 //            Text("caption").font(.caption)
 //        }
         VStack {
-            Text("caption2").font(.caption2)
+            //Text("caption2").font(.caption2)
 //            Text("system:size:weight:design").font(.system(size: 17, weight: .bold, design: .serif))
 //            Text("custom:_:size").font(.custom("Georgia", size: 24))
 //            Text("custom:_:size:relativeTo").font(.custom("Georgia", size: 24, relativeTo: .headline))

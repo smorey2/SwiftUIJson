@@ -60,7 +60,7 @@ public struct JsonUI: Codable {
     }
 
     static func encode(view: Any) throws -> Data {
-        guard let value = view as? Encodable else { fatalError() }
+        guard let value = view as? Encodable else { throw DynaTypeError.typeNotCodable(named: String(reflecting: view)) }
         let root = JsonUI(to: value)
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted

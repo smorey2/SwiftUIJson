@@ -24,10 +24,10 @@ public struct JsonPreview<Content>: View where Content: View {
         
         // data
         do {
-            //let missing = "\(type(of: self.content).self) Not Codeable".data(using: .utf8)!
             data = try JsonUI.encode(view: self.content.body)
-        }
-        catch {
+        } catch DynaTypeError.typeNotCodable(let named) {
+            data = "typeNotCodable named:\(named)".data(using: .utf8)!
+        } catch {
             data = error.localizedDescription.data(using: .utf8)!
         }
         
