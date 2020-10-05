@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/smorey2/_GITHUB/smorey2/SwiftUIJson/SwiftUIJson-App/SwiftUIJson-App.xcodeproj">
+      location = "self:SwiftUIJson-App.xcodeproj">
    </FileRef>
 </Workspace>
