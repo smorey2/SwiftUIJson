@@ -35,8 +35,6 @@ public struct JsonPreview<Content>: View where Content: View {
         do {
             let jsonUI = try JsonUI(from: data)
             content2 = jsonUI.anyView ?? AnyView(Text("notAnyView"))
-        } catch DynaTypeError.moduleNotFound {
-            content2 = AnyView(Text("moduleNotFound"))
         } catch DynaTypeError.typeNotFound {
             content2 = AnyView(Text("typeNotFound"))
         } catch DynaTypeError.typeParseError {
@@ -87,10 +85,10 @@ public struct JsonPreview<Content>: View where Content: View {
     }
 }
 
-struct JsonDebugView_Previews: PreviewProvider {
-    static var previews: some View {
-        JsonPreview {
-            SampleView()
-        }
-    }
-}
+//struct JsonDebugView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        JsonPreview {
+//            SampleView()
+//        }
+//    }
+//}

@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftUIJson
 
 struct SampleView: View {
     var body: some View {
@@ -6,6 +7,7 @@ struct SampleView: View {
             VStack {
                 Text("largeTitle")
                 Text("title")
+                Spacer()
             }
             VStack {
                 Text("caption2")

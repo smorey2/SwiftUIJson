@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftUIJson
 
 struct B03b_LandmarkRow: View {
     var landmark: Landmark

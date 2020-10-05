@@ -19,7 +19,6 @@ extension AnyHashable: DynaCodable {
 }
 
 enum DynaTypeError: Error {
-    case moduleNotFound
     case typeNotFound
     case typeParseError
     case typeNameError(actual: String, expected: String)
@@ -56,13 +55,13 @@ public enum DynaType {
     // MARK - Type Parse
     
     public static func typeName(for obj: Any) -> String! {
-        String(reflecting: Swift.type(of: obj).self).replacingOccurrences(of: " ", with: "")
+        String(reflecting: Swift.type(of: obj).self).replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "SwiftUI.", with: ":")
     }
     
     public static func typeParse(named name: String) throws -> DynaType {
-        if let knownType = knownTypes[name] { return knownType }
-        guard name.components(separatedBy: ".").count > 1 else { throw DynaTypeError.moduleNotFound }
-        let tokens = typeParse(tokens: name)
+        let forName = name.replacingOccurrences(of: ":", with: "SwiftUI.")
+        if let knownType = knownTypes[forName] { return knownType }
+        let tokens = typeParse(tokens: forName)
         var knownType: DynaType = .type(Never.self, "Never")
         var knownName: String = ""
         var nameArray = [String]()
@@ -97,8 +96,8 @@ public enum DynaType {
         guard stack.count == 1, let first = stack.first, first.op == "t" else {
             throw DynaTypeError.typeParseError
         }
-        guard name == knownName else {
-            throw DynaTypeError.typeNameError(actual: name, expected: knownName)
+        guard forName == knownName else {
+            throw DynaTypeError.typeNameError(actual: forName, expected: knownName)
         }
         knownType = first.value as! DynaType
         knownTypes[name] = knownType

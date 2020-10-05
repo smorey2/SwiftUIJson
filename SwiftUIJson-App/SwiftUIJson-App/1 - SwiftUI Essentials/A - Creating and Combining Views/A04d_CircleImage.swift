@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftUIJson
 
 struct A04d_CircleImage: View {
     var body: some View {
