@@ -3,12 +3,14 @@ import SwiftUI
 struct SampleView: View {
     var body: some View {
         VStack {
-            Text("largeTitle")
-            Text("title")
-        }
-        VStack {
-            Text("caption2")
-            Text("system:design")
+            VStack {
+                Text("largeTitle")
+                Text("title")
+            }
+            VStack {
+                Text("caption2")
+                Text("system:design")
+            }
         }
     }
 }
