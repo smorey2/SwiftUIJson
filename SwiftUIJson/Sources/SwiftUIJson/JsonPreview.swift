@@ -1,6 +1,6 @@
 //
-//  JsonDebugView.swift
-//  SwiftUIJson-App
+//  JsonPreview.swift
+//  SwiftUIJson
 //
 //  Created by Sky Morey on 9/10/20.
 //  Copyright © 2020 Sky Morey. All rights reserved.
