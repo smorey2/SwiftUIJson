@@ -1,11 +1,11 @@
 import SwiftUI
 import SwiftUIJson
 
-struct Z01a_Tuple: View {
+struct Z01a_VStack: View {
     var body: some View {
         VStack {
-            Text("Turtle Rock")
-            HStack {
+            Text("VStack")
+            VStack {
                 Text("Joshua Tree National Park")
                 Text("California")
             }
@@ -13,10 +13,10 @@ struct Z01a_Tuple: View {
     }
 }
 
-struct Z01a_Tuple_Previews: PreviewProvider {
+struct Z01a_VStack_Previews: PreviewProvider {
     static var previews: some View {
         JsonPreview {
-            Z01a_Tuple()
+            Z01a_VStack()
         }
     }
 }

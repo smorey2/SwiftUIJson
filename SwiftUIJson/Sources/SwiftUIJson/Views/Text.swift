@@ -68,14 +68,15 @@ extension Text: DynaCodable {
             case color, font, italic, weight, kerning, tracking, baseline, rounded, anyTextModifier
         }
         public init(from decoder: Decoder) throws {
+            let context = decoder.userInfo[.jsonContext] as! JsonContext
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            if container.contains(.color) { self = .color(try container.decodeOptional(Color.self, forKey: .color)) }
-            else if container.contains(.font) { self = .font(try container.decodeOptional(Font.self, forKey: .font)) }
+            if container.contains(.color) { self = .color(try container.decodeOptional(Color.self, forKey: .color, forContext: context)) }
+            else if container.contains(.font) { self = .font(try container.decodeOptional(Font.self, forKey: .font, forContext: context)) }
             else if container.contains(.italic) { self = .italic }
-            else if container.contains(.weight) { self = .weight(try container.decodeOptional(Font.Weight.self, forKey: .weight)) }
-            else if container.contains(.kerning) { self = .kerning(try container.decode(CoreGraphics.CGFloat.self, forKey: .kerning)) }
-            else if container.contains(.tracking) { self = .tracking(try container.decode(CoreGraphics.CGFloat.self, forKey: .tracking)) }
-            else if container.contains(.baseline) { self = .baseline(try container.decode(CoreGraphics.CGFloat.self, forKey: .baseline)) }
+            else if container.contains(.weight) { self = .weight(try container.decodeOptional(Font.Weight.self, forKey: .weight, forContext: context)) }
+            else if container.contains(.kerning) { self = .kerning(try container.decode(CoreGraphics.CGFloat.self, forKey: .kerning, forContext: context)) }
+            else if container.contains(.tracking) { self = .tracking(try container.decode(CoreGraphics.CGFloat.self, forKey: .tracking, forContext: context)) }
+            else if container.contains(.baseline) { self = .baseline(try container.decode(CoreGraphics.CGFloat.self, forKey: .baseline, forContext: context)) }
             else if container.contains(.rounded) { self = .rounded }
             else if container.contains(.anyTextModifier) { self = .anyTextModifier(try container.decode(AnyTextModifier.self, forKey: .anyTextModifier)) }
             else { throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Invalid Text!")) }
@@ -110,9 +111,10 @@ extension Text: DynaCodable {
             case text, table, bundle
         }
         public required init(from decoder: Decoder) throws {
+            let context = decoder.userInfo[.jsonContext] as! JsonContext
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            key = LocalizedStringKey(try container.decode(String.self, forKey: .text))
-            table = try container.decodeIfPresent(String.self, forKey: .table)
+            key = LocalizedStringKey(try container.decode(String.self, forKey: .text, forContext: context))
+            table = try container.decodeIfPresent(String.self, forKey: .table, forContext: context)
             bundle = container.contains(.bundle) ? Bundle() : nil
             //bundle = container.contains(.bundle) ? Bundle.encode() : nil
         }
@@ -144,10 +146,11 @@ extension Text: DynaCodable {
         case verbatim, text, anyText, modifiers
     }
     public init(from decoder: Decoder, for dynaType: DynaType) throws {
+        let context = decoder.userInfo[.jsonContext] as! JsonContext
         let container = try decoder.container(keyedBy: CodingKeys.self)
         // storage
-        if container.contains(.verbatim) { self = Text(verbatim: try container.decode(String.self, forKey: .verbatim)) }
-        else if container.contains(.text) { self = Text(try container.decode(String.self, forKey: .text)) }
+        if container.contains(.verbatim) { self = Text(verbatim: try container.decode(String.self, forKey: .verbatim, forContext: context)) }
+        else if container.contains(.text) { self = Text(try container.decode(String.self, forKey: .text, forContext: context)) }
         else if container.contains(.anyText) {
             let anyText = try container.decode(AnyTextStorage.self, forKey: .anyText)
             self = Text(anyText.key, tableName: anyText.table, bundle: anyText.bundle, comment: nil)

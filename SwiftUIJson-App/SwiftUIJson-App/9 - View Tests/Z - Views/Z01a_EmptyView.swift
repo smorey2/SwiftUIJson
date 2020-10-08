@@ -1,19 +1,19 @@
 import SwiftUI
 import SwiftUIJson
 
-struct SampleView: View {
+struct Z01a_EmptyView: View {
     var body: some View {
         VStack {
-            Text("largeTitle".var(self))
+            Text("EmptyView")
+            EmptyView()
         }
-        //.padding()
     }
 }
 
-struct SampleView_Previews: PreviewProvider {
+struct Z01a_EmptyView_Previews: PreviewProvider {
     static var previews: some View {
         JsonPreview {
-            SampleView()
+            Z01a_EmptyView()
         }
     }
 }
