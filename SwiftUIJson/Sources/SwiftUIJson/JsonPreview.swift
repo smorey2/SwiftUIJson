@@ -23,13 +23,16 @@ public struct JsonPreview<Content>: View where Content: View {
         self.content = content()
         
         // data
+        let view = self.content
+        let context = JsonContext[view]
         do {
-            data = try JsonUI.encode(view: self.content.body)
+            data = try JsonUI.encode(view: view, context: context)
         } catch DynaTypeError.typeNotCodable(let named) {
             data = "typeNotCodable named:\(named)".data(using: .utf8)!
         } catch {
             data = error.localizedDescription.data(using: .utf8)!
         }
+        JsonContext.remove(view)
         
         // content2
         do {
@@ -47,6 +50,7 @@ public struct JsonPreview<Content>: View where Content: View {
             content2 = AnyView(Text("error:\(error.localizedDescription)"))
             //data = error.localizedDescription.data(using: .utf8)! + "\n".data(using: .utf8)! + data
         }
+        print("Done")
     }
             
     public var body: some View {

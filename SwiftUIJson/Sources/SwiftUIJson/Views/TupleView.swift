@@ -28,7 +28,7 @@ extension TupleView: DynaCodable {
         for value in Mirror.values(reflecting: value) {
             guard let value = value as? Encodable else { continue }
             let baseEncoder = container.superEncoder()
-            try baseEncoder.encodeDynaSuper(for: value)
+            try baseEncoder.encodeDynaSuper(value)
         }
     }
 }

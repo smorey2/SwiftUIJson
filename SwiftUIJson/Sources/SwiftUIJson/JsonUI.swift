@@ -20,7 +20,8 @@ public struct JsonAnyView: View {
 
 extension View {
     func dump() -> some View {
-        let data = try! JsonUI.encode(view: self.body)
+        let context = JsonContext[self]
+        let data = try! JsonUI.encode(view: self.body, context: context)
         print(String(data: data, encoding: .utf8)!)
         return self
     }
@@ -39,7 +40,7 @@ extension AnyView: DynaCodable {
         let single = Mirror(reflecting: self).descendant("storage")!
         let storage = AnyViewStorageBase(single)
         guard let value = storage.view as? Encodable else { fatalError("AnyView") }
-        try encoder.encodeDynaSuper(for: value)
+        try encoder.encodeDynaSuper(value)
     }
 }
 
@@ -48,7 +49,7 @@ extension CodingUserInfoKey {
 }
 
 public struct JsonUI: Codable {
-    public let context = JsonContext()
+    public var context = JsonContext()
     public let body: Any
     public var anyView: AnyView? { body as? AnyView }
     
@@ -58,16 +59,17 @@ public struct JsonUI: Codable {
         decoder.userInfo[.jsonContext] = context
         self.body = try decoder.decode(JsonUI.self, from: json).body
     }
-    private init(to encoder: Encodable) {
+    private init(to value: Encodable, context: JsonContext) {
         let _ = JsonUI.registered
-        body = encoder
+        self.context = context
+        body = value
     }
 
-    static func encode(view: Any) throws -> Data {
-        guard let value = view as? Encodable else { throw DynaTypeError.typeNotCodable(named: String(reflecting: view)) }
+    static func encode<Content>(view: Content, context: JsonContext) throws -> Data where Content : View {
+        guard let value = view.body as? Encodable else { throw DynaTypeError.typeNotCodable(named: String(reflecting: view)) }
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
-        return try encoder.encode(JsonUI(to: value))
+        return try encoder.encode(JsonUI(to: value, context: context))
     }
     
     // Mark - Codable
@@ -75,6 +77,13 @@ public struct JsonUI: Codable {
         case _ui, context
     }
     public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let baseDecoder = try container.superDecoder(forKey: ._ui)
+        let baseContainer = try baseDecoder.container(keyedBy: CodingKeys.self)
+        if let newContext = try baseContainer.decodeIfPresent(JsonContext.self, forKey: .context) {
+            context = newContext
+        }
+        // value
         let value = try decoder.decodeDynaSuper()
         guard let anyView = value as? AnyView else {
             guard let view = value as? JsonView else { fatalError("init") }
@@ -87,17 +96,16 @@ public struct JsonUI: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         let baseEncoder = container.superEncoder(forKey: ._ui)
         var baseContainer = baseEncoder.container(keyedBy: CodingKeys.self)
-        try baseContainer.encode(context, forKey: .context)
+        if !context.isEmpty { try baseContainer.encode(context, forKey: .context) }
+        // value
         guard let value = body as? Encodable else { fatalError("encode") }
-        try encoder.encodeDynaSuper(for: value)
+        try encoder.encodeDynaSuper(value)
     }
     
     // MARK - Register
     public static let registered: Bool = registerDefault()
     
-    public static func register<T>(_ type: T.Type) {
-        DynaType.knownType(type)
-    }
+    public static func register<T>(_ type: T.Type) { DynaType.register(type) }
     
     public static func registerDefault() -> Bool {
         registerDefault_all()

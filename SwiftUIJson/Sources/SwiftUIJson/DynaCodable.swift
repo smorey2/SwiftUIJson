@@ -13,7 +13,7 @@ enum CodingKeys: CodingKey {
 }
 
 extension Encoder {
-    public func encodeDynaSuper(for value: Encodable) throws {
+    public func encodeDynaSuper(_ value: Encodable) throws {
         var container = self.container(keyedBy: CodingKeys.self)
         try container.encode(DynaType.typeName(for: value), forKey: .type)
         try value.encode(to: self)
@@ -30,14 +30,16 @@ extension Decoder {
     public func decodeDynaSuper(for dynaType: DynaType, index: Int = -1) throws -> Any {
         switch dynaType[index] {
         case .type(let type, let name):
-            guard let decodableType = type as? DynaDecodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
+            guard let decodableType = type as? DynaDecodable.Type else {
+                guard let decodableType2 = type as? Decodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
+                return try decodableType2.init(from: self)
+            }
             return try decodableType.init(from: self, for: dynaType)
-//        case .tuple(let type, let name, _), .generic(let type, let name, _):
-        case .tuple(let type, let name, _):
-            guard let decodableType = type as? DynaDecodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
-            return try decodableType.init(from: self, for: dynaType)
-        case .generic(let type, let name, _):
-            guard let decodableType = type as? DynaDecodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
+        case .tuple(let type, let name, _), .generic(let type, let name, _):
+            guard let decodableType = type as? DynaDecodable.Type else {
+                guard let decodableType2 = type as? Decodable.Type else { throw DynaTypeError.typeNotCodable(named: name) }
+                return try decodableType2.init(from: self)
+            }
             return try decodableType.init(from: self, for: dynaType)
         }
     }

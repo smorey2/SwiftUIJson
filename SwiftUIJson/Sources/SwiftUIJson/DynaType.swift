@@ -43,7 +43,7 @@ public enum DynaType {
     static var knownTypes = [String:DynaType]()
     static var knownGenerics = [String:Any.Type]()
     
-    public static func knownType<T>(_ type: T.Type) {
+    public static func register<T>(_ type: T.Type) {
         let knownName = String(reflecting: type)
         knownTypes[knownName] = .type(type, knownName)
         let parts = knownName.components(separatedBy: "<"); if parts.count == 1 { return }
@@ -59,6 +59,7 @@ public enum DynaType {
     }
     
     public static func typeParse(named name: String) throws -> DynaType {
+        let _ = registered
         let forName = name.replacingOccurrences(of: ":", with: "SwiftUI.")
         if let knownType = knownTypes[forName] { return knownType }
         let tokens = typeParse(tokens: forName)
@@ -191,4 +192,16 @@ public enum DynaType {
     //            return source.withUnsafeBytes { $0.bindMemory(to: T.self)[0] }
     //        }
     //    }
+    
+    // MARK - Register
+    public static let registered: Bool = registerDefault()
+    
+    public static func registerDefault() -> Bool {
+        registerDefault_all()
+        return true
+    }
+    
+    static func registerDefault_all() {
+        register(String.self)
+    }
 }

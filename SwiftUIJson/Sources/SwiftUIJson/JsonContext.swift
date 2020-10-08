@@ -8,44 +8,63 @@
 
 import SwiftUI
 
+// https://swiftrocks.com/weak-dictionary-values-in-swift
+
 public class JsonContext: Codable {
-    struct JsonSlot: Codable {
-        public let key: String
-        public let value: Encodable
-        // MARK - Codable
-        enum CodingKeys: CodingKey {
-            case key, type, value
-        }
-        public init(key: String, value: Encodable) {
-            self.key = key
-            self.value = value
-        }
-        public init(from decoder: Decoder) throws {
-            fatalError()
-//            let container = try decoder.container(keyedBy: CodingKeys.self)
-//            key = try container.decode(String.self, forKey: .key)
-//            key = try container.decode(String.self, forKey: .type)
-//            value.encode(to: <#T##Encoder#>)
-//            value = try container.decode(Codable.self, forKey: .value)
-        }
-        public func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(key, forKey: .key)
-            try value.encode(to: container.superEncoder(forKey: .value))
-        }
+    // MARK - Static
+
+    static var cachedContexts = NSMapTable<NSString, JsonContext>.init(
+        keyOptions: .copyIn,
+        valueOptions: .weakMemory
+    )
+
+    public static func remove(_ index: Any) {
+        let key = String(reflecting: index) as NSString
+        cachedContexts.removeObject(forKey: key)
     }
-    static var contexts = [ObjectIdentifier:JsonContext]()
-    var slots: [Int:JsonSlot]
     
-    public static subscript(index: AnyObject) -> JsonContext {
-        let id = ObjectIdentifier(index)
-        guard let context = contexts[id] else {
-            let newContext = JsonContext()
-            contexts[id] = newContext
+    public static subscript(index: Any) -> JsonContext {
+        let key = String(reflecting: index) as NSString
+        guard let context = cachedContexts.object(forKey: key) else {
+            let newContext = JsonContext() //; print("context: [\(key)]")
+            cachedContexts.setObject(newContext, forKey: key)
             return newContext
         }
         return context
     }
+    
+    // MARK - Instance
+    
+    struct JsonSlot: Codable {
+        public let key: String
+        public let value: Any
+        // MARK - Codable
+        enum CodingKeys: CodingKey {
+            case key, type, `default`
+        }
+        public init(key: String, value: Any) {
+            self.key = key
+            self.value = value
+        }
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            key = try container.decode(String.self, forKey: .key)
+            let dynaType = try DynaType.typeParse(named: try container.decode(String.self, forKey: .type))
+            let baseDecoder = try container.superDecoder(forKey: .default)
+            self.value = try baseDecoder.decodeDynaSuper(for: dynaType)
+        }
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(key, forKey: .key)
+            try container.encode(DynaType.typeName(for: value), forKey: .type)
+            guard let value = value as? Encodable else { fatalError() }
+            let baseEncoder = container.superEncoder(forKey: .default)
+            try value.encode(to: baseEncoder)
+        }
+    }
+    
+    public var isEmpty: Bool { slots.isEmpty }
+    var slots: [Int:JsonSlot]
     
     // MARK - Codable
     public init() {
@@ -53,28 +72,12 @@ public class JsonContext: Codable {
     }
     public required init(from decoder: Decoder) throws {
         var container = try decoder.unkeyedContainer()
-        let slots = try container.decode([Int:JsonSlot].self)
-        fatalError()
-        //self.init(slots)
-//        var slots = [Int:JsonSlot]()
-//        while !container.isAtEnd {
-//            let baseDecoder = try container.superDecoder()
-//            let slot = try baseDecoder.decodeDynaSuper()
-//            slots.append(slot)
-//        }
-        //self.init(slot)
+        slots = try container.decode([Int:JsonSlot].self)
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.unkeyedContainer()
-        slots[0] = JsonSlot(key: "0", value: "0")
-        slots[1] = JsonSlot(key: "1", value: "1")
-        slots[2] = JsonSlot(key: "2", value: "2")
         try container.encode(slots)
-//        for slot in slots {
-//            guard let slot = slot as? Encodable else { continue }
-//            let baseEncoder = container.superEncoder()
-//            try baseEncoder.encodeSuper(for: slot)
-//        }
+
     }
     
     // MARK - Variable
