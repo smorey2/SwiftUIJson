@@ -7,7 +7,15 @@
 
 import SwiftUI
 
-extension Divider: Encodable {
+extension Divider: JsonView {
+    public var anyView: AnyView { AnyView(self) }
+}
+
+extension Divider: DynaCodable {
+    // MARK - Codable
+    public init(from decoder: Decoder, for dynaType: DynaType) throws {
+        self.init()
+    }
     public func encode(to encoder: Encoder) throws {
     }
 }

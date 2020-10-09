@@ -10,7 +10,7 @@ import Foundation
 
 extension AnyHashable: DynaCodable {
     public init(from decoder: Decoder, for dynaType: DynaType) throws {
-        guard let value = try decoder.decodeDynaSuper(for: dynaType, index: 0) as? AnyHashable else { fatalError("AnyHashable") }
+        guard let value = try decoder.dynaSuperInit(for: dynaType, index: 0) as? AnyHashable else { fatalError("AnyHashable") }
         self = value
     }
     public func encode(to encoder: Encoder) throws {
@@ -25,7 +25,7 @@ enum DynaTypeError: Error {
     case typeNotCodable(named: String)
 }
 
-public enum DynaType {
+public enum DynaType: Codable {
     case type(_ type: Any.Type, _ name: String)
     case tuple(_ type: Any.Type, _ name: String, _ components: [DynaType])
     case generic(_ type: Any.Type, _ name: String, _ components: [DynaType])
@@ -33,13 +33,26 @@ public enum DynaType {
     public subscript(index: Int) -> DynaType {
         guard index > -1 else { return self }
         switch self {
-        case .tuple(_, _, let componets), .generic(_, _, let componets): return componets[index]
-        default: return self
+        case .type: return self
+        case .tuple(_, _, let componets), .generic(_, _, let componets):
+            return componets[index]
+        }
+    }
+    
+    // MARK - Codable
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self = try DynaType.typeParse(for: try container.decode(String.self))
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .type(let type, _), .tuple(let type, _, _), .generic(let type, _, _):
+            try container.encode(DynaType.typeName(for: type))
         }
     }
 
     // MARK - Known Type
-    
     static var knownTypes = [String:DynaType]()
     static var knownGenerics = [String:Any.Type]()
     
@@ -53,14 +66,19 @@ public enum DynaType {
     }
     
     // MARK - Type Parse
-    
-    public static func typeName(for obj: Any) -> String! {
-        String(reflecting: Swift.type(of: obj).self).replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "SwiftUI.", with: ":")
+    public static func type(for type: Any.Type) throws -> DynaType {
+        let _ = registered
+        return try typeParse(for: typeName(for: type))
     }
     
-    public static func typeParse(named name: String) throws -> DynaType {
+    // MARK - Type Parse
+    private static func typeName(for type: Any.Type) -> String! {
+        String(reflecting: type).replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "SwiftUI.", with: ":").replacingOccurrences(of: "Swift.", with: "#")
+    }
+
+    public static func typeParse(for name: String) throws -> DynaType {
         let _ = registered
-        let forName = name.replacingOccurrences(of: ":", with: "SwiftUI.")
+        let forName = name.replacingOccurrences(of: ":", with: "SwiftUI.").replacingOccurrences(of: "#", with: "Swift.")
         if let knownType = knownTypes[forName] { return knownType }
         let tokens = typeParse(tokens: forName)
         var knownType: DynaType = .type(Never.self, "Never")
@@ -105,7 +123,7 @@ public enum DynaType {
         return knownType
     }
     
-    static func typeParse(tokens raw: String) -> [(op: String, value: String)] {
+    private static func typeParse(tokens raw: String) -> [(op: String, value: String)] {
         let breaks = ["<", "(", ",", ")", ">"]
         let name = raw.replacingOccurrences(of: " ", with: "")
         var tokens = [(op: String, value: String)]()
@@ -123,12 +141,12 @@ public enum DynaType {
         return tokens
     }
     
-    static func typeParse(knownName: String) throws -> DynaType {
+    private static func typeParse(knownName: String) throws -> DynaType {
         if let knownType = knownTypes[knownName] { return knownType }
         throw DynaTypeError.typeNotFound
     }
     
-    static func typeParse(knownName: String, tuple: [DynaType]) throws -> DynaType {
+    private static func typeParse(knownName: String, tuple: [DynaType]) throws -> DynaType {
         if let knownType = knownTypes[knownName] { return knownType }
         var type: Any.Type
         switch tuple.count {
@@ -148,7 +166,7 @@ public enum DynaType {
         return knownTypes[knownName]!
     }
     
-    static func typeBuild<Element>(_ dataType: DynaType, for s: [Element]) -> Any {
+    internal static func typeBuild<Element>(_ dataType: DynaType, for s: [Element]) -> Any {
         switch s.count {
         case 01: return (JsonAnyView(s[0] as! JsonView))
         case 02: return (JsonAnyView(s[0] as! JsonView), JsonAnyView(s[1] as! JsonView))
@@ -169,7 +187,7 @@ public enum DynaType {
         }
     }
     
-    static func typeParse(knownName: String, genericName: String, generic: [DynaType]) throws -> DynaType {
+    private static func typeParse(knownName: String, genericName: String, generic: [DynaType]) throws -> DynaType {
         if let knownType = knownTypes[knownName] { return knownType }
         let genericKey: String
         switch generic[0] {
@@ -201,7 +219,7 @@ public enum DynaType {
         return true
     }
     
-    static func registerDefault_all() {
+    private static func registerDefault_all() {
         register(String.self)
     }
 }

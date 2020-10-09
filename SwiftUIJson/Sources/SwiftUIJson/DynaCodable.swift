@@ -6,8 +6,7 @@
 //  Copyright © 2020 Sky Morey. All rights reserved.
 //
 
-// MARK - Encoder / Decoder
-
+// MARK - Codable
 enum CodingKeys: CodingKey {
     case type
 }
@@ -15,7 +14,7 @@ enum CodingKeys: CodingKey {
 extension Encoder {
     public func encodeDynaSuper(_ value: Encodable) throws {
         var container = self.container(keyedBy: CodingKeys.self)
-        try container.encode(DynaType.typeName(for: value), forKey: .type)
+        try container.encode(DynaType.type(for: type(of: value).self), forKey: .type)
         try value.encode(to: self)
     }
 }
@@ -23,11 +22,11 @@ extension Encoder {
 extension Decoder {
     public func decodeDynaSuper() throws -> Any {
         let container = try self.container(keyedBy: CodingKeys.self)
-        let dynaType = try DynaType.typeParse(named: try container.decode(String.self, forKey: .type))
-        return try decodeDynaSuper(for: dynaType)
+        let type = try container.decode(DynaType.self, forKey: .type)
+        return try dynaSuperInit(for: type)
     }
     
-    public func decodeDynaSuper(for dynaType: DynaType, index: Int = -1) throws -> Any {
+    public func dynaSuperInit(for dynaType: DynaType, index: Int = -1) throws -> Any {
         switch dynaType[index] {
         case .type(let type, let name):
             guard let decodableType = type as? DynaDecodable.Type else {

@@ -33,7 +33,7 @@ extension AnyView: DynaCodable {
         init(_ s: Any) { view = Mirror(reflecting: s).descendant("view")! }
     }
     public init(from decoder: Decoder, for dynaType: DynaType) throws {
-        guard let value = try decoder.decodeDynaSuper(for: dynaType, index: 0) as? JsonView else { fatalError("AnyView") }
+        guard let value = try decoder.dynaSuperInit(for: dynaType, index: 0) as? JsonView else { fatalError("AnyView") }
         self = value.anyView
     }
     public func encode(to encoder: Encoder) throws {
@@ -56,6 +56,7 @@ public struct JsonUI: Codable {
     public init(from json: Data) throws {
         let _ = JsonUI.registered
         let decoder = JSONDecoder()
+        self.context = try decoder.decode(JsonContext.self, from: json)
         decoder.userInfo[.jsonContext] = context
         self.body = try decoder.decode(JsonUI.self, from: json).body
     }
@@ -74,16 +75,10 @@ public struct JsonUI: Codable {
     
     // Mark - Codable
     enum CodingKeys: CodingKey {
-        case _ui, context
+        case _ui
     }
     public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let baseDecoder = try container.superDecoder(forKey: ._ui)
-        let baseContainer = try baseDecoder.container(keyedBy: CodingKeys.self)
-        if let newContext = try baseContainer.decodeIfPresent(JsonContext.self, forKey: .context) {
-            context = newContext
-        }
-        // value
+        context = decoder.userInfo[.jsonContext] as! JsonContext
         let value = try decoder.decodeDynaSuper()
         guard let anyView = value as? AnyView else {
             guard let view = value as? JsonView else { fatalError("init") }
@@ -94,10 +89,7 @@ public struct JsonUI: Codable {
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        let baseEncoder = container.superEncoder(forKey: ._ui)
-        var baseContainer = baseEncoder.container(keyedBy: CodingKeys.self)
-        if !context.isEmpty { try baseContainer.encode(context, forKey: .context) }
-        // value
+        try container.encode(context, forKey: ._ui)
         guard let value = body as? Encodable else { fatalError("encode") }
         try encoder.encodeDynaSuper(value)
     }

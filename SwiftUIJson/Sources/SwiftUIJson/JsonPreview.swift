@@ -23,6 +23,7 @@ public struct JsonPreview<Content>: View where Content: View {
         self.content = content()
         
         // data
+        print("encode")
         let view = self.content
         let context = JsonContext[view]
         do {
@@ -35,6 +36,7 @@ public struct JsonPreview<Content>: View where Content: View {
         JsonContext.remove(view)
         
         // content2
+        print("decode")
         do {
             let jsonUI = try JsonUI(from: data)
             content2 = jsonUI.anyView ?? AnyView(Text("notAnyView"))
